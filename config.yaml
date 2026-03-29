@@ -1,0 +1,17 @@
+interests:
+  - AI and machine learning
+  - startup funding and venture capital
+  - developer tools and infrastructure
+  - B2B SaaS and product
+
+sources:
+  - name: TechCrunch
+    url: https://techcrunch.com/feed/
+  - name: The Verge
+    url: https://www.theverge.com/rss/index.xml
+  - name: Hacker News
+    url: https://news.ycombinator.com/rss
+  - name: MIT Technology Review
+    url: https://www.technologyreview.com/feed/
+  # - name: The Information (free)
+  #   url: https://www.theinformation.com/feed  # requires subscription
