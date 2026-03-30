@@ -333,80 +333,26 @@
   function saveToken() { const v = document.getElementById("token-input").value.trim(); if (!v) { setTokenStatus("Enter a token first.", "err"); return; } localStorage.setItem("gh_token", v); setTokenStatus("Token saved.", "ok"); toast("Token saved."); }
   function clearToken() { localStorage.removeItem("gh_token"); document.getElementById("token-input").value = ""; setTokenStatus("Token cleared.", ""); }
 
-  // State / pins
-  // localStorage is the primary store — always works, no token needed.
-  // GitHub state.json is the sync layer — used when a token is set.
-  let cachedState = null;
-  let cachedSha   = null;
+  // ── Pins — localStorage is the only source of truth ──────────────────────
+  // No async dependencies. togglePin works instantly on click.
+  // GitHub sync is fire-and-forget for cross-device use.
 
-  function loadLocalPins() {
+  let ghSha = null; // cached for GitHub writes
+
+  function getPins() {
     try { return JSON.parse(localStorage.getItem("pins") || "[]"); } catch(e) { return []; }
   }
-  function saveLocalPins(pins) {
+  function setPins(pins) {
     localStorage.setItem("pins", JSON.stringify(pins));
-  }
-
-  async function fetchState() {
-    // Always start with localStorage pins so they appear instantly
-    cachedState = { seen_highlights: [], pins: loadLocalPins() };
-
-    // Try to get sha (needed for writes) and merge any GitHub-only pins
-    try {
-      const token = localStorage.getItem("gh_token");
-      const headers = token ? { Authorization: `token ${token}` } : {};
-      const resp = await fetch(STATE_API, { headers, cache: "no-store" });
-      if (resp.ok) {
-        const data = await resp.json();
-        cachedSha = data.sha;
-        const remote = JSON.parse(atob(data.content.replace(/\n/g, "")));
-        // Merge: union of local + remote pins by URL, local takes precedence
-        const localUrls = new Set(cachedState.pins.map(p => p.url));
-        const remotePins = (remote.pins || []).filter(p => !localUrls.has(p.url));
-        cachedState.pins = [...cachedState.pins, ...remotePins];
-        saveLocalPins(cachedState.pins);
-      }
-    } catch (e) { /* no token or network error — local pins still work */ }
-
-    return cachedState;
-  }
-
-  async function writeState(state) {
-    // Always save locally first
-    saveLocalPins(state.pins);
-
-    // Then sync to GitHub if we have a token + sha
-    const token = localStorage.getItem("gh_token");
-    if (!token) return true; // local save succeeded, no cross-device sync
-    if (!cachedSha) return true; // can't write without sha, but local is saved
-
-    const resp = await fetch(STATE_API, {
-      method: "PUT",
-      headers: { Authorization: `token ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ message: "Update pins", content: btoa(unescape(encodeURIComponent(JSON.stringify(state, null, 2)))), sha: cachedSha, branch: GITHUB_BRANCH })
-    });
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      if (err.message && err.message.includes("sha")) {
-        // sha conflict (another device wrote) — refresh sha silently
-        try {
-          const r2 = await fetch(STATE_API, { headers: { Authorization: `token ${token}` }, cache: "no-store" });
-          if (r2.ok) { const d2 = await r2.json(); cachedSha = d2.sha; }
-        } catch(e) {}
-      }
-      return false;
-    }
-    const data = await resp.json();
-    cachedSha = data.content.sha;
-    cachedState = state;
-    return true;
   }
 
   function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
-  function renderPins(pins) {
+  function renderPins() {
+    const pins = getPins();
     const section = document.getElementById("pins-section");
     const container = document.getElementById("pins-container");
-    if (!pins || pins.length === 0) { section.style.display = "none"; return; }
+    if (pins.length === 0) { section.style.display = "none"; return; }
     section.style.display = "";
     container.innerHTML = pins.slice().reverse().map(p => `
       <div class="pin-card">
@@ -424,8 +370,8 @@
       </div>`).join("");
   }
 
-  function syncPinButtons(pins) {
-    const pinned = new Set(pins.map(p => p.url));
+  function syncPinButtons() {
+    const pinned = new Set(getPins().map(p => p.url));
     document.querySelectorAll(".pin-btn[data-url]").forEach(btn => {
       const on = pinned.has(btn.dataset.url);
       btn.classList.toggle("pinned", on);
@@ -434,19 +380,46 @@
     });
   }
 
-  async function togglePin(btn) {
-    if (!cachedState) return;
+  function togglePin(btn) {
     const { url, title, source, date } = btn.dataset;
     const topic = btn.closest("[data-topic]")?.dataset.topic || "";
-    const pins = cachedState.pins;
+    const pins = getPins();
     const idx = pins.findIndex(p => p.url === url);
     const wasPinned = idx !== -1;
-    if (wasPinned) { cachedState.pins.splice(idx, 1); }
-    else { cachedState.pins.push({ url, title, source, date, topic, pinned_at: new Date().toISOString() }); }
-    renderPins(cachedState.pins);
-    syncPinButtons(cachedState.pins);
-    await writeState(cachedState);
+    if (wasPinned) { pins.splice(idx, 1); }
+    else { pins.push({ url, title, source, date, topic, pinned_at: new Date().toISOString() }); }
+    setPins(pins);
+    renderPins();
+    syncPinButtons();
     toast(wasPinned ? "Unpinned." : "Pinned.");
+    syncToGitHub(pins); // fire and forget
+  }
+
+  async function syncToGitHub(pins) {
+    const token = localStorage.getItem("gh_token");
+    if (!token) return;
+    try {
+      // Get current sha if we don't have it
+      if (!ghSha) {
+        const r = await fetch(STATE_API, { headers: { Authorization: `token ${token}` }, cache: "no-store" });
+        if (!r.ok) return;
+        const d = await r.json();
+        ghSha = d.sha;
+        // Also merge any remote-only pins into localStorage
+        const remote = JSON.parse(atob(d.content.replace(/\n/g, "")));
+        const localUrls = new Set(getPins().map(p => p.url));
+        const extras = (remote.pins || []).filter(p => !localUrls.has(p.url));
+        if (extras.length) { setPins([...getPins(), ...extras]); renderPins(); syncPinButtons(); }
+      }
+      const state = { seen_highlights: [], pins };
+      const resp = await fetch(STATE_API, {
+        method: "PUT",
+        headers: { Authorization: `token ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ message: "Update pins", content: btoa(unescape(encodeURIComponent(JSON.stringify(state, null, 2)))), sha: ghSha, branch: GITHUB_BRANCH })
+      });
+      if (resp.ok) { const d = await resp.json(); ghSha = d.content.sha; }
+      else { ghSha = null; } // reset sha so next call re-fetches
+    } catch(e) { ghSha = null; }
   }
 
   // Topic filter
@@ -482,18 +455,10 @@
   }
 
   updateCounts();
-
-  // Render local pins immediately so pinned section appears on load without waiting for network
-  const localPins = loadLocalPins();
-  renderPins(localPins);
-  syncPinButtons(localPins);
-
-  // Then fetch state (merges GitHub pins if token set) and re-render
-  (async () => {
-    const state = await fetchState();
-    renderPins(state.pins);
-    syncPinButtons(state.pins);
-  })();
+  renderPins();
+  syncPinButtons();
+  // If token is set, fetch GitHub state in background to merge any remote-only pins
+  if (localStorage.getItem("gh_token")) syncToGitHub(getPins());
 </script>
 </body>
 </html>
