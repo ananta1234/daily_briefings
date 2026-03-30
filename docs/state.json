@@ -1,4 +1,10 @@
 {
-  "seen_highlights": [],
+  "seen_highlights": [
+    "https://www.statnews.com/2026/03/29/insilico-medicine-lilly-sign-ai-drug-commercialization-deal/?utm_campaign=rss",
+    "https://www.axios.com/2026/03/29/claude-mythos-anthropic-cyberattack-ai-agents",
+    "https://techcrunch.com/2026/03/30/qodo-bets-on-code-verification-as-ai-coding-scales-raises-70m/",
+    "https://techcrunch.com/2026/03/30/mistral-ai-raises-830m-in-debt-to-set-up-a-data-center-near-paris/",
+    "https://www.bloomberg.com/news/articles/2026-03-30/goldman-cio-marco-argenti-on-changes-in-corporate-ai-use"
+  ],
   "pins": []
 }
