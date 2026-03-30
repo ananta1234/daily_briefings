@@ -25,7 +25,7 @@ jobs:
 
       - name: Generate briefing
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY_2 }}
         run: python generate.py
 
       - name: Commit and push

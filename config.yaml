@@ -61,3 +61,15 @@ sources:
   # Higher Ed & Civic
   - name: Inside Higher Ed
     url: https://www.insidehighered.com/rss.xml
+
+  # Substacks
+  - name: Fix the News
+    url: https://fixthenews.com/feed
+  - name: Eating Policy
+    url: https://www.eatingpolicy.com/feed
+  - name: Mariana Mazzucato
+    url: https://marianamazzucato.substack.com/feed
+  - name: The Elysian
+    url: https://www.elysian.press/feed
+  - name: Roots of Progress
+    url: https://newsletter.rootsofprogress.org/feed
