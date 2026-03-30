@@ -353,7 +353,7 @@
     const section = document.getElementById("pins-section");
     const container = document.getElementById("pins-container");
     if (pins.length === 0) { section.style.display = "none"; return; }
-    section.style.display = "";
+    section.style.display = "block";
     container.innerHTML = pins.slice().reverse().map(p => `
       <div class="pin-card">
         <div class="pin-card-top">
