@@ -97,9 +97,11 @@
     .why-it-matters { font-size: 13px; color: var(--text-muted); padding-left: 10px; border-left: 2px solid var(--accent); line-height: 1.5; }
 
     /* Pin button */
-    .pin-btn { border: none !important; background: none !important; padding: 3px 5px; cursor: pointer; color: var(--text-muted); font-size: 15px; line-height: 1; border-radius: 4px; transition: color 0.15s; flex-shrink: 0; position: absolute; top: 11px; right: 11px; }
-    .pin-btn:hover { color: var(--text); }
+    .pin-btn { border: none !important; background: none !important; padding: 2px 4px; cursor: pointer; color: var(--text-muted); font-size: 15px; line-height: 1; border-radius: 4px; transition: color 0.15s; flex-shrink: 0; margin-left: auto; }
+    .pin-btn:hover { color: var(--text); border-color: transparent !important; }
     .pin-btn.pinned { color: var(--pin-active) !important; }
+    /* highlight card pin sits in its own row below why-it-matters */
+    .highlight-pin-row { display: flex; justify-content: flex-end; margin-top: 6px; }
 
     /* Source nav */
     .source-nav { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 24px; }
@@ -110,14 +112,14 @@
     .source-section { margin-bottom: 32px; }
     .source-heading { font-size: 15px; font-weight: 700; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 2px; }
     .source-count { font-size: 12px; font-weight: 400; color: var(--text-muted); margin-left: 6px; }
-    .article-card { padding: 11px 0; border-bottom: 1px solid var(--border); position: relative; }
+    .article-card { padding: 11px 0; border-bottom: 1px solid var(--border); }
     .article-card:last-child { border-bottom: none; }
     .article-card.is-highlight { background: var(--bg-highlight); border: 1px solid var(--border-highlight); border-radius: 6px; padding: 10px 13px; margin: 5px 0; }
-    .article-card h3 { font-size: 14px; font-weight: 500; line-height: 1.45; margin-bottom: 4px; padding-right: 26px; }
+    .article-card h3 { font-size: 14px; font-weight: 500; line-height: 1.45; margin-bottom: 4px; }
     .article-card h3 a { color: var(--text); text-decoration: none; }
     .article-card h3 a:hover { color: var(--text-link); text-decoration: underline; }
     .article-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; }
-    .article-footer { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-muted); }
+    .article-footer { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-muted); width: 100%; }
     .score-badge { padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
     .score-high { background: var(--score-high-bg); color: var(--score-high-fg); }
     .score-mid  { background: var(--score-mid-bg);  color: var(--score-mid-fg); }
@@ -259,7 +261,9 @@
       </div>
       <h3><a href="{{ article.url }}" target="_blank" rel="noopener">{{ article.title }}</a></h3>
       <p class="why-it-matters">{{ article.why_it_matters }}</p>
-      <button class="pin-btn" data-url="{{ article.url }}" data-title="{{ article.title }}" data-source="{{ article.source }}" data-date="{{ article.published_display }}" onclick="togglePin(this)" title="Pin">&#8853;</button>
+      <div class="highlight-pin-row">
+        <button class="pin-btn" data-url="{{ article.url }}" data-title="{{ article.title }}" data-source="{{ article.source }}" data-date="{{ article.published_display }}" onclick="togglePin(this)" title="Pin">&#8853;</button>
+      </div>
     </div>
     {% endfor %}
   </section>
@@ -287,8 +291,8 @@
         {% if score >= 7 %}<span class="score-badge score-high">{{ score }}/10</span>
         {% elif score >= 4 %}<span class="score-badge score-mid">{{ score }}/10</span>
         {% elif score > 0 %}<span class="score-badge score-low">{{ score }}/10</span>{% endif %}
+        <button class="pin-btn" data-url="{{ article.url }}" data-title="{{ article.title }}" data-source="{{ article.source }}" data-date="{{ article.published_display }}" onclick="togglePin(this)" title="Pin">&#8853;</button>
       </div>
-      <button class="pin-btn" data-url="{{ article.url }}" data-title="{{ article.title }}" data-source="{{ article.source }}" data-date="{{ article.published_display }}" onclick="togglePin(this)" title="Pin">&#8853;</button>
     </div>
     {% endfor %}
   </section>
@@ -414,7 +418,9 @@
           <span class="pin-date">${escHtml(p.date||"")}</span>
         </div>
         <h3><a href="${escHtml(p.url)}" target="_blank" rel="noopener">${escHtml(p.title)}</a></h3>
-        <button class="pin-btn pinned" data-url="${escHtml(p.url)}" data-title="${escHtml(p.title)}" data-source="${escHtml(p.source||"")}" data-date="${escHtml(p.date||"")}" onclick="togglePin(this)" title="Unpin">&#8855;</button>
+        <div class="highlight-pin-row">
+          <button class="pin-btn pinned" data-url="${escHtml(p.url)}" data-title="${escHtml(p.title)}" data-source="${escHtml(p.source||"")}" data-date="${escHtml(p.date||"")}" onclick="togglePin(this)" title="Unpin">&#8855;</button>
+        </div>
       </div>`).join("");
   }
 
@@ -476,7 +482,18 @@
   }
 
   updateCounts();
-  (async () => { const state = await fetchState(); renderPins(state.pins); syncPinButtons(state.pins); })();
+
+  // Render local pins immediately so pinned section appears on load without waiting for network
+  const localPins = loadLocalPins();
+  renderPins(localPins);
+  syncPinButtons(localPins);
+
+  // Then fetch state (merges GitHub pins if token set) and re-render
+  (async () => {
+    const state = await fetchState();
+    renderPins(state.pins);
+    syncPinButtons(state.pins);
+  })();
 </script>
 </body>
 </html>
