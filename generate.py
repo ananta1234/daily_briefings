@@ -12,8 +12,9 @@ import anthropic
 from jinja2 import Environment, FileSystemLoader
 
 ET = ZoneInfo("America/New_York")
-FETCH_TIMEOUT = 15  # seconds per feed
+FETCH_TIMEOUT = 15
 MAX_ARTICLES_FOR_AI = 100
+GITHUB_CONFIG_URL = "https://github.com/ananta1234/daily_briefings/blob/main/config.yaml"
 
 
 def load_config():
@@ -23,13 +24,11 @@ def load_config():
 
 
 def clean_html(text):
-    """Strip HTML tags and normalize whitespace."""
     text = re.sub(r"<[^>]+>", " ", text or "")
     return " ".join(text.split())
 
 
 def fmt_date(dt):
-    """Format a datetime without leading zeros (cross-platform safe)."""
     if not dt:
         return ""
     dt_et = dt.astimezone(ET)
@@ -42,7 +41,6 @@ def fmt_date(dt):
 
 
 def parse_entry_date(entry):
-    """Extract a UTC-aware datetime from a feedparser entry."""
     for field in ("published_parsed", "updated_parsed"):
         val = getattr(entry, field, None)
         if val:
@@ -54,7 +52,6 @@ def parse_entry_date(entry):
 
 
 def fetch_feed(source):
-    """Fetch one RSS feed. Returns (name, articles, error_or_None)."""
     try:
         resp = requests.get(
             source["url"],
@@ -79,16 +76,15 @@ def fetch_feed(source):
             if not url:
                 continue
 
-            articles.append(
-                {
-                    "title": title,
-                    "url": url,
-                    "description": description,
-                    "published": published.isoformat() if published else None,
-                    "published_display": fmt_date(published),
-                    "source": source["name"],
-                }
-            )
+            articles.append({
+                "title": title,
+                "url": url,
+                "description": description,
+                "published": published.isoformat() if published else None,
+                "published_display": fmt_date(published),
+                "source": source["name"],
+                "topic": "General Tech",  # default, overwritten by AI
+            })
 
         return source["name"], articles, None
 
@@ -122,58 +118,62 @@ def deduplicate(articles):
     return result
 
 
-def get_ai_analysis(articles, interests):
+def get_ai_analysis(articles, interests, topics):
     """
-    Send articles to Claude and get back:
-    - highlights: top 5 articles with why_it_matters explanations
-    - scores: dict of url -> relevance score (1-10)
-
-    Returns (highlights, scores). On any failure, returns ([], {}).
+    Returns (highlights, scores, topic_map).
+    On failure returns ([], {}, {}) and site still renders without AI features.
     """
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key or not articles:
         print("[WARN] Skipping AI analysis (no API key or no articles)")
-        return [], {}
+        return [], {}, {}
 
     client = anthropic.Anthropic(api_key=api_key)
     articles_for_ai = articles[:MAX_ARTICLES_FOR_AI]
 
     interests_str = "\n".join(f"- {i}" for i in interests)
+    topics_str = ", ".join(f'"{t}"' for t in topics)
     articles_list = "\n\n".join(
         f"[{i}] {a['title']} ({a['source']})\n{a['description'][:200]}"
         for i, a in enumerate(articles_for_ai)
     )
 
-    prompt = f"""You are a personal news curator. The reader's interests:
+    prompt = f"""You are a personal news curator for a specific reader. Their interests:
 {interests_str}
+
+Available topic categories: {topics_str}
 
 Today's articles (indexed 0 to {len(articles_for_ai) - 1}):
 {articles_list}
 
-Return a JSON object (no other text) with:
+Return a JSON object (no other text) with exactly these keys:
 {{
   "highlights": [
     {{
       "index": <int>,
-      "why_it_matters": "<1-2 sentences: why this is relevant to the reader's specific interests>"
+      "why_it_matters": "<1-2 sentences explaining why this is significant and relevant to the reader's specific interests>"
     }}
   ],
   "scores": {{
     "<index as string>": <relevance score 1-10>
+  }},
+  "topics": {{
+    "<index as string>": "<one of the available topic categories>"
   }}
 }}
 
-Pick the 5 most relevant articles for highlights. Score all {len(articles_for_ai)} articles."""
+Rules:
+- highlights: pick the 5 most significant AND relevant articles. Prioritize real significance (major regulatory moves, big funding, policy shifts) over minor news.
+- scores: score all {len(articles_for_ai)} articles
+- topics: assign every article to exactly one topic category from the list above"""
 
     try:
         message = client.messages.create(
             model="claude-haiku-4-5-20251001",
-            max_tokens=2500,
+            max_tokens=4000,
             messages=[{"role": "user", "content": prompt}],
         )
         raw = message.content[0].text.strip()
-
-        # Strip markdown code fences if present
         raw = re.sub(r"^```(?:json)?\s*", "", raw)
         raw = re.sub(r"\s*```$", "", raw)
 
@@ -196,35 +196,26 @@ Pick the 5 most relevant articles for highlights. Score all {len(articles_for_ai
             except (ValueError, TypeError):
                 pass
 
-        return highlights, scores
+        topic_map = {}
+        for idx_str, topic in result.get("topics", {}).items():
+            try:
+                idx = int(idx_str)
+                if 0 <= idx < len(articles_for_ai):
+                    topic_map[articles_for_ai[idx]["url"]] = topic
+            except (ValueError, TypeError):
+                pass
+
+        return highlights, scores, topic_map
 
     except Exception as e:
-        print(f"[WARN] AI analysis failed: {e}. Showing articles without scoring.")
-        return [], {}
-
-
-def render(articles, highlights, scores, errors, interests, generated_at, by_source):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    env = Environment(loader=FileSystemLoader(script_dir), autoescape=True)
-    template = env.get_template("template.html")
-
-    highlight_urls = {a["url"] for a in highlights}
-
-    return template.render(
-        highlights=highlights,
-        by_source=by_source,
-        scores=scores,
-        highlight_urls=highlight_urls,
-        errors=errors,
-        interests=interests,
-        generated_at=generated_at,
-        total_articles=len(articles),
-    )
+        print(f"[WARN] AI analysis failed: {e}. Rendering without AI features.")
+        return [], {}, {}
 
 
 def main():
     config = load_config()
     interests = config["interests"]
+    topics = config.get("topics", ["General Tech"])
     sources = config["sources"]
 
     print(f"[INFO] Fetching {len(sources)} feeds...")
@@ -234,10 +225,14 @@ def main():
     print(f"[INFO] {len(articles)} unique articles after dedup")
 
     print("[INFO] Running AI analysis...")
-    highlights, scores = get_ai_analysis(articles, interests)
-    print(f"[INFO] {len(highlights)} highlights, {len(scores)} scored")
+    highlights, scores, topic_map = get_ai_analysis(articles, interests, topics)
+    print(f"[INFO] {len(highlights)} highlights, {len(scores)} scored, {len(topic_map)} tagged")
 
-    # Group by source, sort each group by relevance then date
+    # Apply topic tags from AI
+    for a in articles:
+        a["topic"] = topic_map.get(a["url"], "General Tech")
+
+    # Group by source, sort each group by relevance then recency
     by_source = {}
     for a in articles:
         by_source.setdefault(a["source"], []).append(a)
@@ -248,14 +243,30 @@ def main():
         )
 
     now_et = datetime.now(ET)
-    # %-d / %-I strips leading zeros on Linux (GitHub Actions); use int() for safety
     day = str(now_et.day)
     hour = str(int(now_et.strftime("%I")))
     generated_at = now_et.strftime(f"%A, %B {day}, %Y at {hour}:%M %p ET")
 
-    html = render(articles, highlights, scores, errors, interests, generated_at, by_source)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    env = Environment(loader=FileSystemLoader(script_dir), autoescape=True)
+    template = env.get_template("template.html")
+    highlight_urls = {a["url"] for a in highlights}
 
-    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "docs")
+    html = template.render(
+        highlights=highlights,
+        by_source=by_source,
+        scores=scores,
+        highlight_urls=highlight_urls,
+        errors=errors,
+        interests=interests,
+        topics=topics,
+        sources=sources,
+        generated_at=generated_at,
+        total_articles=len(articles),
+        github_config_url=GITHUB_CONFIG_URL,
+    )
+
+    out_dir = os.path.join(script_dir, "docs")
     os.makedirs(out_dir, exist_ok=True)
     out_path = os.path.join(out_dir, "index.html")
     with open(out_path, "w", encoding="utf-8") as f:

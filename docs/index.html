@@ -9,37 +9,43 @@
       --bg: #0f0f0f;
       --bg-card: #161616;
       --bg-highlight: #141f14;
+      --bg-panel: #131313;
       --border: #242424;
       --border-highlight: #2e4a2e;
       --text: #e4e4e4;
-      --text-muted: #777;
+      --text-muted: #666;
       --text-link: #6aadee;
       --accent: #4e8f4e;
+      --tab-active-bg: #1e1e1e;
+      --tab-active-text: #e4e4e4;
       --tag-bg: #1e1e1e;
       --score-high-bg: rgba(78,143,78,0.15);
       --score-high-fg: #6abf6a;
       --score-mid-bg: rgba(180,150,40,0.15);
       --score-mid-fg: #c8a84a;
-      --score-low-bg: rgba(100,100,100,0.15);
-      --score-low-fg: #666;
+      --score-low-bg: rgba(100,100,100,0.12);
+      --score-low-fg: #555;
     }
     :root[data-theme="light"] {
       --bg: #f7f7f5;
       --bg-card: #ffffff;
       --bg-highlight: #f0f7f0;
+      --bg-panel: #f0f0ee;
       --border: #e2e2e2;
       --border-highlight: #aacfaa;
       --text: #1c1c1c;
-      --text-muted: #777;
+      --text-muted: #888;
       --text-link: #1a56b0;
       --accent: #2e7230;
+      --tab-active-bg: #ffffff;
+      --tab-active-text: #1c1c1c;
       --tag-bg: #efefef;
       --score-high-bg: rgba(46,114,48,0.1);
       --score-high-fg: #2e7230;
       --score-mid-bg: rgba(150,120,20,0.1);
       --score-mid-fg: #8a6e10;
-      --score-low-bg: rgba(120,120,120,0.1);
-      --score-low-fg: #999;
+      --score-low-bg: rgba(120,120,120,0.08);
+      --score-low-fg: #aaa;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -55,37 +61,25 @@
     /* ── Header ── */
     header {
       border-bottom: 1px solid var(--border);
-      padding: 18px 0 14px;
+      padding: 16px 0 0;
       position: sticky;
       top: 0;
       background: var(--bg);
-      z-index: 10;
+      z-index: 20;
     }
-    .header-inner {
-      max-width: 860px;
+    .header-top {
+      max-width: 900px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 24px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
     }
-    .site-title {
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-    }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-shrink: 0;
-    }
-    .generated-at {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    #theme-toggle {
+    .site-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .generated-at { font-size: 12px; color: var(--text-muted); }
+
+    button {
       background: none;
       border: 1px solid var(--border);
       color: var(--text-muted);
@@ -93,36 +87,57 @@
       padding: 3px 10px;
       border-radius: 5px;
       font-size: 12px;
-      transition: border-color 0.15s;
+      font-family: inherit;
+      transition: border-color 0.15s, color 0.15s;
     }
-    #theme-toggle:hover { border-color: var(--text-muted); color: var(--text); }
+    button:hover { border-color: var(--text-muted); color: var(--text); }
 
-    .interests-bar {
-      max-width: 860px;
-      margin: 8px auto 0;
+    /* ── Topic tabs ── */
+    .tabs-wrap {
+      max-width: 900px;
+      margin: 0 auto;
       padding: 0 24px;
-      font-size: 12px;
-      color: var(--text-muted);
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
+      gap: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
     }
-    .interest-tag {
-      background: var(--tag-bg);
-      border: 1px solid var(--border);
-      padding: 2px 8px;
-      border-radius: 4px;
+    .tabs-wrap::-webkit-scrollbar { display: none; }
+
+    .tab {
+      flex-shrink: 0;
+      padding: 7px 13px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      border-bottom: none;
+      border-radius: 5px 5px 0 0;
+      cursor: pointer;
+      background: none;
+      transition: color 0.15s, background 0.15s;
     }
+    .tab:hover { color: var(--text); }
+    .tab.active {
+      background: var(--tab-active-bg);
+      color: var(--tab-active-text);
+      border-color: var(--border);
+      border-bottom-color: var(--bg);
+    }
+    .tab .count {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+    .tab.active .count { color: var(--text-muted); }
 
     /* ── Layout ── */
     main {
-      max-width: 860px;
+      max-width: 900px;
       margin: 0 auto;
-      padding: 28px 24px 60px;
+      padding: 24px 24px 60px;
     }
 
-    /* ── Section labels ── */
     .section-label {
       font-size: 11px;
       font-weight: 600;
@@ -134,50 +149,50 @@
       border-bottom: 1px solid var(--border);
     }
 
-    /* ── Stats bar ── */
+    /* ── Stats ── */
     .stats {
       display: flex;
-      gap: 20px;
+      gap: 16px;
       font-size: 12px;
       color: var(--text-muted);
-      margin-bottom: 28px;
-      padding: 10px 14px;
+      margin-bottom: 24px;
+      padding: 9px 14px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 6px;
+      flex-wrap: wrap;
     }
 
     /* ── Errors ── */
-    .errors-wrap {
-      margin-bottom: 24px;
-    }
+    .errors-wrap { margin-bottom: 20px; }
     .errors-wrap details {
       font-size: 13px;
       color: var(--text-muted);
-      padding: 10px 14px;
+      padding: 9px 14px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 6px;
     }
     .errors-wrap summary { cursor: pointer; }
-    .errors-wrap p { margin-top: 5px; font-size: 12px; }
+    .errors-wrap p { margin-top: 4px; font-size: 12px; }
 
     /* ── Highlights ── */
-    .highlights-section { margin-bottom: 40px; }
+    .highlights-section { margin-bottom: 36px; }
 
     .highlight-card {
       background: var(--bg-highlight);
       border: 1px solid var(--border-highlight);
       border-radius: 8px;
-      padding: 15px 18px;
-      margin-bottom: 10px;
+      padding: 14px 17px;
+      margin-bottom: 9px;
     }
     .highlight-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
+    .highlight-meta { display: flex; align-items: center; gap: 8px; }
     .highlight-source {
       font-size: 11px;
       font-weight: 600;
@@ -185,24 +200,23 @@
       letter-spacing: 0.5px;
       color: var(--accent);
     }
-    .highlight-date {
-      font-size: 11px;
+    .topic-badge {
+      font-size: 10px;
+      padding: 1px 7px;
+      border-radius: 4px;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
       color: var(--text-muted);
     }
+    .highlight-date { font-size: 11px; color: var(--text-muted); }
     .highlight-card h3 {
       font-size: 15px;
       font-weight: 600;
       line-height: 1.4;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
     }
-    .highlight-card h3 a {
-      color: var(--text);
-      text-decoration: none;
-    }
-    .highlight-card h3 a:hover {
-      color: var(--text-link);
-      text-decoration: underline;
-    }
+    .highlight-card h3 a { color: var(--text); text-decoration: none; }
+    .highlight-card h3 a:hover { color: var(--text-link); text-decoration: underline; }
     .why-it-matters {
       font-size: 13px;
       color: var(--text-muted);
@@ -215,22 +229,24 @@
     .source-nav {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 28px;
+      gap: 5px;
+      margin-bottom: 24px;
     }
     .source-nav a {
       font-size: 12px;
       color: var(--text-muted);
       text-decoration: none;
-      padding: 3px 10px;
+      padding: 2px 9px;
       border: 1px solid var(--border);
       border-radius: 4px;
       transition: border-color 0.15s, color 0.15s;
     }
     .source-nav a:hover { color: var(--text); border-color: var(--text-muted); }
+    .source-nav a.hidden { display: none; }
 
     /* ── Source sections ── */
-    .source-section { margin-bottom: 36px; }
+    .source-section { margin-bottom: 32px; }
+    .source-section.hidden { display: none; }
 
     .source-heading {
       font-size: 15px;
@@ -248,7 +264,7 @@
 
     /* ── Article cards ── */
     .article-card {
-      padding: 12px 0;
+      padding: 11px 0;
       border-bottom: 1px solid var(--border);
     }
     .article-card:last-child { border-bottom: none; }
@@ -256,27 +272,22 @@
       background: var(--bg-highlight);
       border: 1px solid var(--border-highlight);
       border-radius: 6px;
-      padding: 11px 14px;
-      margin: 6px 0;
+      padding: 10px 13px;
+      margin: 5px 0;
     }
+    .article-card.hidden { display: none; }
     .article-card h3 {
       font-size: 14px;
       font-weight: 500;
       line-height: 1.45;
       margin-bottom: 4px;
     }
-    .article-card h3 a {
-      color: var(--text);
-      text-decoration: none;
-    }
-    .article-card h3 a:hover {
-      color: var(--text-link);
-      text-decoration: underline;
-    }
+    .article-card h3 a { color: var(--text); text-decoration: none; }
+    .article-card h3 a:hover { color: var(--text-link); text-decoration: underline; }
     .article-desc {
       font-size: 13px;
       color: var(--text-muted);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -286,7 +297,7 @@
     .article-footer {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       font-size: 12px;
       color: var(--text-muted);
     }
@@ -300,6 +311,63 @@
     .score-mid  { background: var(--score-mid-bg);  color: var(--score-mid-fg); }
     .score-low  { background: var(--score-low-bg);  color: var(--score-low-fg); }
 
+    /* ── Sources panel ── */
+    .sources-panel {
+      margin-bottom: 24px;
+    }
+    .sources-panel details {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .sources-panel summary {
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      list-style: none;
+    }
+    .sources-panel summary::-webkit-details-marker { display: none; }
+    .sources-panel summary .summary-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+    .sources-panel summary .edit-link {
+      color: var(--text-link);
+      text-decoration: none;
+      font-size: 12px;
+    }
+    .sources-panel summary .edit-link:hover { text-decoration: underline; }
+    .sources-list {
+      border-top: 1px solid var(--border);
+      padding: 12px 0;
+    }
+    .source-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 16px;
+      font-size: 13px;
+    }
+    .source-row:hover { background: var(--bg-panel); }
+    .source-row-name { font-weight: 500; }
+    .source-row-url {
+      font-size: 11px;
+      color: var(--text-muted);
+      max-width: 380px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     /* ── Empty state ── */
     .empty {
       text-align: center;
@@ -307,35 +375,68 @@
       color: var(--text-muted);
       font-size: 14px;
     }
+    .no-results {
+      padding: 24px 0;
+      color: var(--text-muted);
+      font-size: 14px;
+      text-align: center;
+      display: none;
+    }
+    .no-results.visible { display: block; }
 
-    /* ── Responsive ── */
     @media (max-width: 600px) {
-      .header-inner { flex-wrap: wrap; }
-      .stats { flex-wrap: wrap; gap: 10px; }
+      .header-top { flex-wrap: wrap; gap: 8px; }
       .generated-at { display: none; }
+      .source-row-url { display: none; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="header-inner">
+  <div class="header-top">
     <div class="site-title">Daily Briefing</div>
     <div class="header-right">
-      <span class="generated-at">Sunday, March 29, 2026 at 2:31 PM ET</span>
-      <button id="theme-toggle" onclick="toggleTheme()">Light</button>
+      <span class="generated-at">Sunday, March 29, 2026 at 9:15 PM ET</span>
+      <button onclick="toggleTheme()" id="theme-btn">Light</button>
     </div>
   </div>
-  <div class="interests-bar">
-    Tracking:
+  <div class="tabs-wrap">
+    <button class="tab active" data-topic="all" onclick="filterTopic(this, 'all')">
+      All <span class="count" id="count-all"></span>
+    </button>
     
-    <span class="interest-tag">AI and machine learning</span>
+    <button class="tab" data-topic="AI Regulation &amp; Policy" onclick="filterTopic(this, 'AI Regulation &amp; Policy')">
+      AI Regulation &amp; Policy <span class="count" id="count-1"></span>
+    </button>
     
-    <span class="interest-tag">startup funding and venture capital</span>
+    <button class="tab" data-topic="Pharma &amp; Life Sciences" onclick="filterTopic(this, 'Pharma &amp; Life Sciences')">
+      Pharma &amp; Life Sciences <span class="count" id="count-2"></span>
+    </button>
     
-    <span class="interest-tag">developer tools and infrastructure</span>
+    <button class="tab" data-topic="FinServ &amp; Model Risk" onclick="filterTopic(this, 'FinServ &amp; Model Risk')">
+      FinServ &amp; Model Risk <span class="count" id="count-3"></span>
+    </button>
     
-    <span class="interest-tag">B2B SaaS and product</span>
+    <button class="tab" data-topic="AI &amp; LLM Development" onclick="filterTopic(this, 'AI &amp; LLM Development')">
+      AI &amp; LLM Development <span class="count" id="count-4"></span>
+    </button>
+    
+    <button class="tab" data-topic="Geopolitics &amp; Economics" onclick="filterTopic(this, 'Geopolitics &amp; Economics')">
+      Geopolitics &amp; Economics <span class="count" id="count-5"></span>
+    </button>
+    
+    <button class="tab" data-topic="Startups &amp; VC" onclick="filterTopic(this, 'Startups &amp; VC')">
+      Startups &amp; VC <span class="count" id="count-6"></span>
+    </button>
+    
+    <button class="tab" data-topic="Higher Ed &amp; Civic" onclick="filterTopic(this, 'Higher Ed &amp; Civic')">
+      Higher Ed &amp; Civic <span class="count" id="count-7"></span>
+    </button>
+    
+    <button class="tab" data-topic="General Tech" onclick="filterTopic(this, 'General Tech')">
+      General Tech <span class="count" id="count-8"></span>
+    </button>
     
   </div>
 </header>
@@ -343,257 +444,444 @@
 <main>
 
   <div class="stats">
-    <span>32 articles</span>
-    <span>3 sources</span>
+    <span id="stat-articles">71 articles</span>
+    <span>6 sources</span>
     
-    <span>Sunday, March 29, 2026 at 2:31 PM ET</span>
+    <span>Sunday, March 29, 2026 at 9:15 PM ET</span>
+  </div>
+
+  
+  <div class="errors-wrap">
+    <details>
+      <summary>⚠ 1 source(s) had fetch issues</summary>
+      
+      <p>Risk.net: 404 Client Error: Not Found for url: https://www.risk.net/rss/all</p>
+      
+    </details>
+  </div>
+  
+
+  <!-- Sources panel -->
+  <div class="sources-panel">
+    <details>
+      <summary>
+        <span>News Sources</span>
+        <span class="summary-right">
+          <span>15 configured</span>
+          <a class="edit-link" href="https://github.com/ananta1234/daily_briefings/blob/main/config.yaml" target="_blank" rel="noopener">Edit in GitHub →</a>
+        </span>
+      </summary>
+      <div class="sources-list">
+        
+        <div class="source-row">
+          <span class="source-row-name">TechCrunch</span>
+          <span class="source-row-url">https://techcrunch.com/feed/</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">The Verge</span>
+          <span class="source-row-url">https://www.theverge.com/rss/index.xml</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">MIT Technology Review</span>
+          <span class="source-row-url">https://www.technologyreview.com/feed/</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">Hacker News</span>
+          <span class="source-row-url">https://news.ycombinator.com/rss</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">VentureBeat AI</span>
+          <span class="source-row-url">https://venturebeat.com/category/ai/feed/</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">Import AI (Jack Clark)</span>
+          <span class="source-row-url">https://importai.substack.com/feed</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">The Gradient</span>
+          <span class="source-row-url">https://thegradient.pub/rss/</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">FDA News (MedPage Today)</span>
+          <span class="source-row-url">https://www.medpagetoday.com/rss/headlines.xml</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">Fierce Pharma</span>
+          <span class="source-row-url">https://www.fiercepharma.com/rss/xml</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">Risk.net</span>
+          <span class="source-row-url">https://www.risk.net/rss/all</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">Crunchbase News</span>
+          <span class="source-row-url">https://news.crunchbase.com/feed/</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">StrictlyVC</span>
+          <span class="source-row-url">https://strictlyvc.com/feed/</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">Foreign Affairs (free)</span>
+          <span class="source-row-url">https://www.foreignaffairs.com/rss.xml</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">The Economist</span>
+          <span class="source-row-url">https://www.economist.com/finance-and-economics/rss.xml</span>
+        </div>
+        
+        <div class="source-row">
+          <span class="source-row-name">Inside Higher Ed</span>
+          <span class="source-row-url">https://www.insidehighered.com/rss.xml</span>
+        </div>
+        
+      </div>
+    </details>
   </div>
 
   
 
-  
-
-  
-
-  <div class="source-nav">
+  <!-- Source jump nav (hidden when filtering by topic) -->
+  <div class="source-nav" id="source-nav">
     
-    <a href="#src-1">Hacker News</a>
+    <a href="#src-1" id="nav-1">Hacker News</a>
     
-    <a href="#src-2">The Verge</a>
+    <a href="#src-2" id="nav-2">The Verge</a>
     
-    <a href="#src-3">TechCrunch</a>
+    <a href="#src-3" id="nav-3">TechCrunch</a>
+    
+    <a href="#src-4" id="nav-4">FDA News (MedPage Today)</a>
+    
+    <a href="#src-5" id="nav-5">The Economist</a>
+    
+    <a href="#src-6" id="nav-6">Fierce Pharma</a>
     
   </div>
 
+  <div class="no-results" id="no-results">No articles for this topic today.</div>
+
   
-  <section class="source-section" id="src-1">
+  <section class="source-section" id="src-1" data-source="Hacker News">
     <div class="source-heading">
-      Hacker News<span class="source-count">19</span>
+      Hacker News<span class="source-count">22</span>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://github.com/dreddnafious/thereisnospoon" target="_blank" rel="noopener">There is No Spoon. A software engineers primer for demystified ML</a></h3>
+      
+      <p class="article-desc">Comments</p>
+      
+      <div class="article-footer">
+        <span>3/29 6:28 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.gjlondon.com/blog/ai-agents-could-make-free-software-matter-again/" target="_blank" rel="noopener">Coding Agents Could Make Free Software Matter Again</a></h3>
+      
+      <p class="article-desc">Comments</p>
+      
+      <div class="article-footer">
+        <span>3/29 6:21 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://github.com/anthropics/claude-code/issues/40710" target="_blank" rel="noopener">Claude Code runs Git reset –hard origin/main against project repo every 10 mins</a></h3>
+      
+      <p class="article-desc">Comments</p>
+      
+      <div class="article-footer">
+        <span>3/29 6:15 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://crazierl.org/demo/" target="_blank" rel="noopener">Show HN: Crazierl – An Erlang Operating System</a></h3>
+      
+      <p class="article-desc">Comments</p>
+      
+      <div class="article-footer">
+        <span>3/29 4:38 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.bbc.com/travel/article/20260327-the-road-signs-that-teach-travellers-about-france" target="_blank" rel="noopener">The road signs that teach travellers about France</a></h3>
+      
+      <p class="article-desc">Comments</p>
+      
+      <div class="article-footer">
+        <span>3/29 4:30 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.buchodi.com/chatgpt-wont-let-you-type-until-cloudflare-reads-your-react-state-i-decrypted-the-program-that-does-it/" target="_blank" rel="noopener">ChatGPT won&#39;t let you type until Cloudflare reads your React state</a></h3>
+      
+      <p class="article-desc">Comments</p>
+      
+      <div class="article-footer">
+        <span>3/29 4:21 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://torrentfreak.com/sky-wins-irish-court-order-to-unmask-300-pirate-iptv-users-via-revolut-bank/" target="_blank" rel="noopener">Sky Wins Irish Court Order to Unmask 300 Pirate IPTV Users via Revolut Bank</a></h3>
+      
+      <p class="article-desc">Comments</p>
+      
+      <div class="article-footer">
+        <span>3/29 4:04 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://isp.netscape.com/news/story/0001/20260329/e4d8ea591b3b036142c2bf2dee7dff5a" target="_blank" rel="noopener">Midnight train from GA: A view of America from the tracks as airports struggle</a></h3>
+      
+      <p class="article-desc">Comments</p>
+      
+      <div class="article-footer">
+        <span>3/29 4:00 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://ryelang.org/blog/posts/cognitive-dark-forest/" target="_blank" rel="noopener">The Cognitive Dark Forest</a></h3>
+      
+      <p class="article-desc">Comments</p>
+      
+      <div class="article-footer">
+        <span>3/29 3:36 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://bramcohen.com/p/more-on-version-control" target="_blank" rel="noopener">More on Version Control</a></h3>
+      
+      <p class="article-desc">Comments</p>
+      
+      <div class="article-footer">
+        <span>3/29 3:26 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.jrkyushu.co.jp/english/train/index.html" target="_blank" rel="noopener">Kyushu Railway Company Train Varieties</a></h3>
+      
+      <p class="article-desc">Comments</p>
+      
+      <div class="article-footer">
+        <span>3/29 3:08 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://github.com/alonsovm44/glupe" target="_blank" rel="noopener">Show HN: I made a &#34;programming language&#34; looking for feedback</a></h3>
+      
+      <p class="article-desc">Comments</p>
+      
+      <div class="article-footer">
+        <span>3/29 2:35 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://herbsutter.com/2026/03/29/c26-is-done-trip-report-march-2026-iso-c-standards-meeting-london-croydon-uk/" target="_blank" rel="noopener">C++26 is done ISO C++ standards meeting, Trip Report</a></h3>
       
       <p class="article-desc">Comments</p>
       
       <div class="article-footer">
         <span>3/29 1:46 PM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://github.com/neovim/neovim/releases/tag/v0.12.0" target="_blank" rel="noopener">Neovim 0.12.0</a></h3>
       
       <p class="article-desc">Comments</p>
       
       <div class="article-footer">
         <span>3/29 1:39 PM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
-      <h3><a href="https://isp.netscape.com/" target="_blank" rel="noopener">Netscape News Feed Straight Out of the Late 00s</a></h3>
-      
-      <p class="article-desc">Comments</p>
-      
-      <div class="article-footer">
-        <span>3/29 1:34 PM ET</span>
-        
-        
-      </div>
-    </div>
-    
-    <div class="article-card ">
-      <h3><a href="https://mashable.com/article/sony-sd-card-sales-suspended-memory-shortage" target="_blank" rel="noopener">First Western Digital, now Sony: The tech giant suspends SD card sales</a></h3>
-      
-      <p class="article-desc">Comments</p>
-      
-      <div class="article-footer">
-        <span>3/29 1:14 PM ET</span>
-        
-        
-      </div>
-    </div>
-    
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://www.righto.com/2026/03/ibm-4-pi-computer-history.html" target="_blank" rel="noopener">The rise and fall of IBM&#39;s 4 Pi aerospace computers: an illustrated history</a></h3>
       
       <p class="article-desc">Comments</p>
       
       <div class="article-footer">
         <span>3/29 12:26 PM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
-      <h3><a href="https://gladeart.com/blog/the-bot-situation-on-the-internet-is-actually-worse-than-you-could-imagine-heres-why" target="_blank" rel="noopener">The bot situation on the internet is worse than you could imagine</a></h3>
-      
-      <p class="article-desc">Comments</p>
-      
-      <div class="article-footer">
-        <span>3/29 12:17 PM ET</span>
-        
-        
-      </div>
-    </div>
-    
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://techfixated.com/a-1977-time-capsule-voyager-1-runs-on-69-kb-of-memory-and-an-8-track-tape-recorder-4/" target="_blank" rel="noopener">Voyager 1 runs on 69 KB of memory and an 8-track tape recorder</a></h3>
       
       <p class="article-desc">Comments</p>
       
       <div class="article-footer">
         <span>3/29 12:12 PM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
-      <h3><a href="https://successfulsoftware.net/2026/03/29/stop-publishing-garbage-data-its-embarrassing/" target="_blank" rel="noopener">Twice this week, I have come across embarassingly bad data</a></h3>
-      
-      <p class="article-desc">Comments</p>
-      
-      <div class="article-footer">
-        <span>3/29 11:54 AM ET</span>
-        
-        
-      </div>
-    </div>
-    
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://www.theguardian.com/society/2026/mar/29/full-network-clitoral-nerves-mapped-out-first-time-women-pelvic-surgery" target="_blank" rel="noopener">Full network of clitoral nerves mapped out for first time</a></h3>
       
       <p class="article-desc">Comments</p>
       
       <div class="article-footer">
         <span>3/29 11:54 AM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://github.com/DavidHavoc/ayaFlow" target="_blank" rel="noopener">AyaFlow: A high-performance, eBPF-based network traffic analyzer written in Rust</a></h3>
       
       <p class="article-desc">Comments</p>
       
       <div class="article-footer">
         <span>3/29 11:28 AM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://www.cnn.com/2026/03/29/us/angela-lipps-ai-facial-recognition" target="_blank" rel="noopener">Police used AI facial recognition to wrongly arrest TN woman for crimes in ND</a></h3>
       
       <p class="article-desc">Comments</p>
       
       <div class="article-footer">
         <span>3/29 10:20 AM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
-      <h3><a href="https://breezepdf.com/?v=3" target="_blank" rel="noopener">Show HN: BreezePDF – Free, in-browser PDF editor</a></h3>
-      
-      <p class="article-desc">Comments</p>
-      
-      <div class="article-footer">
-        <span>3/29 9:47 AM ET</span>
-        
-        
-      </div>
-    </div>
-    
-    <div class="article-card ">
-      <h3><a href="https://sheetninja.io" target="_blank" rel="noopener">Show HN: Sheet Ninja – Google Sheets as a CRUD Back End for Vibe Coders</a></h3>
-      
-      <p class="article-desc">Comments</p>
-      
-      <div class="article-footer">
-        <span>3/29 7:42 AM ET</span>
-        
-        
-      </div>
-    </div>
-    
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://github.com/austin-weeks/miasma" target="_blank" rel="noopener">Miasma: A tool to trap AI web scrapers in an endless poison pit</a></h3>
       
       <p class="article-desc">Comments</p>
       
       <div class="article-footer">
         <span>3/29 6:10 AM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://news.umich.edu/nitrile-and-latex-gloves-may-cause-overestimation-of-microplastics-u-m-study-reveals/" target="_blank" rel="noopener">Nitrile and latex gloves may cause overestimation of microplastics</a></h3>
       
       <p class="article-desc">Comments</p>
       
       <div class="article-footer">
         <span>3/29 5:46 AM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://news.ycombinator.com/item?id=47561489" target="_blank" rel="noopener">LinkedIn uses 2.4 GB RAM across two tabs</a></h3>
       
       <p class="article-desc">Comments</p>
       
       <div class="article-footer">
         <span>3/29 4:58 AM ET</span>
-        
-        
-      </div>
-    </div>
-    
-    <div class="article-card ">
-      <h3><a href="https://www.bmj.com/content/387/bmj-2024-082194" target="_blank" rel="noopener">Alzheimer&#39;s disease mortality among taxi and ambulance drivers (2024)</a></h3>
-      
-      <p class="article-desc">Comments</p>
-      
-      <div class="article-footer">
-        <span>3/28 8:53 PM ET</span>
-        
-        
-      </div>
-    </div>
-    
-    <div class="article-card ">
-      <h3><a href="https://github.com/elixir-volt/quickbeam" target="_blank" rel="noopener">Show HN: QuickBEAM – run JavaScript as supervised Erlang/OTP processes</a></h3>
-      
-      <p class="article-desc">Comments</p>
-      
-      <div class="article-footer">
-        <span>3/28 5:03 PM ET</span>
-        
-        
-      </div>
-    </div>
-    
-    <div class="article-card ">
-      <h3><a href="https://nielsleenheer.com/articles/2026/css-is-doomed-rendering-doom-in-3d-with-css/" target="_blank" rel="noopener">CSS is DOOMed</a></h3>
-      
-      <p class="article-desc">Comments</p>
-      
-      <div class="article-footer">
-        <span>3/28 4:39 PM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
@@ -601,90 +889,118 @@
     
   </section>
   
-  <section class="source-section" id="src-2">
+  <section class="source-section" id="src-2" data-source="The Verge">
     <div class="source-heading">
-      The Verge<span class="source-count">7</span>
+      The Verge<span class="source-count">8</span>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.theverge.com/ai-artificial-intelligence/903190/bluesky-attie-ai-custom-feeds" target="_blank" rel="noopener">Bluesky’s new app is an AI for customizing your feed</a></h3>
+      
+      <p class="article-desc">The latest app from the team behind Bluesky is Attie, an AI assistant that lets you build your own algorithm. At the Atmosphere conference, Bluesky&#39;s former CEO, Jay Graber, and CTO Paul Frazee, unveiled Attie, which is powered by Anthropic&#39;s Claude and built on top of Bluesky&#39;s underlying AT Protocol (atproto). Attie allows users to [&amp;#8230;]</p>
+      
+      <div class="article-footer">
+        <span>3/29 5:44 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.theverge.com/entertainment/903174/red-rooms-movie-review-serial-killer-dark-web" target="_blank" rel="noopener">Red Rooms makes online poker as thrilling as its serial killer</a></h3>
+      
+      <p class="article-desc">It&#39;s rare for a movie to get technology right. And it&#39;s even rarer for that movie to be a thriller or horror, where realism takes a backseat to scares and tension. But Red Rooms mostly gets it. Nothing takes me out of a film quicker than a tech MacGuffin that might as well be literal [&amp;#8230;]</p>
+      
+      <div class="article-footer">
+        <span>3/29 3:45 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://www.theverge.com/gadgets/899580/best-amazon-big-spring-sale-2026-deals" target="_blank" rel="noopener">The best deals we’ve found from Amazon’s Big Spring Sale (so far)</a></h3>
       
       <p class="article-desc">Amazon loves to manufacture an event. March is historically a dry spell for deals; however, with Amazon’s third annual Big Spring Sale, which runs through March 31st, the retail behemoth is hoping to lure in would-be shoppers with the promise of steep(ish) savings and discounts on more seasonal, spring-centric items to hold folks over until [&amp;#8230;]</p>
       
       <div class="article-footer">
         <span>3/29 12:30 PM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://www.theverge.com/games/902910/epilogue-gb-operator-phone-counterfeit-fake-cartridge-detection" target="_blank" rel="noopener">Can my favorite Game Boy gadget tell fake cartridges from real?</a></h3>
       
       <p class="article-desc">The $50 Epilogue GB Operator has a brand-new trick up its sleeve. In addition to backing up Game Boy, Game Boy Color and Game Boy Advance cartridges and saves to a PC (and writing saves back to carts again!), it can now plug into your phone with a brand-new Retrace app for Android and iOS. [&amp;#8230;]</p>
       
       <div class="article-footer">
         <span>3/29 11:00 AM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://www.theverge.com/report/901818/hbo-harry-potter-jk-rowling-transphobia" target="_blank" rel="noopener">There is no ethical consumption of HBO’s Harry Potter series</a></h3>
       
       <p class="article-desc">In the coming years, HBO wants its new Harry Potter series to become &#34;the streaming event of the decade&#34; as it adapts each of the franchise&#39;s seven original books. The show could very well become a hit that captures the imaginations of a new generation of fans who weren&#39;t there for the first wave of [&amp;#8230;]</p>
       
       <div class="article-footer">
         <span>3/29 10:00 AM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://www.theverge.com/gadgets/902829/birdbuddy-netvue-smart-bird-feeders-amazon-big-spring-sale-2026-deals" target="_blank" rel="noopener">Amazon’s Big Spring Sale is a great time to get a fancy, AI-powered bird feeder</a></h3>
       
       <p class="article-desc">Bird feeders have come a long way since their inception in the early 1900s. These days, it’s not all that surprising to see feeders kitted out with cameras and solar roofs, two marquee features you’ll find on feeders from both BirdBuddy and Netvue. And while modern hoppers can command a pretty penny, Amazon’s Big Spring [&amp;#8230;]</p>
       
       <div class="article-footer">
         <span>3/29 9:00 AM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://www.theverge.com/podcast/903068/macintosh-1984-version-history" target="_blank" rel="noopener">The Macintosh changed computers forever</a></h3>
       
       <p class="article-desc">Apple&#39;s most legendary computer has two legacies: there&#39;s the computer itself, and there&#39;s the commercial. That commercial. Only a couple of days before Steve Jobs debuted the computer that would both help cement his legacy and contribute to his unceremonious exile from Apple, the company dropped a Super Bowl ad that is still one of [&amp;#8230;]</p>
       
       <div class="article-footer">
         <span>3/29 8:30 AM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://www.theverge.com/column/902668/apple-antitrust-app-store-war" target="_blank" rel="noopener">Apple’s long, bitter App Store antitrust war</a></h3>
       
       <p class="article-desc">This is The Stepback, a weekly newsletter breaking down one essential story from the tech world. For more on the legal travails of Big Tech, follow Adi Robertson. The Stepback arrives in our subscribers&#39; inboxes at 8AM ET. Opt in for The Stepback here. How it started The year was 1998, and reigning personal computer [&amp;#8230;]</p>
       
       <div class="article-footer">
         <span>3/29 8:00 AM ET</span>
-        
-        
-      </div>
-    </div>
-    
-    <div class="article-card ">
-      <h3><a href="https://www.theverge.com/entertainment/903056/suno-ai-music-v5-5-model" target="_blank" rel="noopener">Suno leans into customization with v5.5</a></h3>
-      
-      <p class="article-desc">Suno just released one of its biggest updates yet with v5.5 of its AI music model. Where previous updates focused mostly on improving fidelity and creating more natural vocals, v5.5 is about giving users more control. It includes three new features: Voices, My Taste, and Custom Models. In the release notes, Suno says that Voices [&amp;#8230;]</p>
-      
-      <div class="article-footer">
-        <span>3/28 2:33 PM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
@@ -692,78 +1008,601 @@
     
   </section>
   
-  <section class="source-section" id="src-3">
+  <section class="source-section" id="src-3" data-source="TechCrunch">
     <div class="source-heading">
       TechCrunch<span class="source-count">6</span>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://techcrunch.com/2026/03/29/google-pixel-10a-review-camera-bump-performance-ai-chip/" target="_blank" rel="noopener">The Pixel 10a doesn’t have a camera bump, and it’s great</a></h3>
+      
+      <p class="article-desc">The Google Pixel 10a can lay flat on a table, but otherwise the company hasn&#39;t brought a ton of upgrades to its newest budget smartphone.</p>
+      
+      <div class="article-footer">
+        <span>3/29 5:30 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://techcrunch.com/2026/03/29/youtube-ceo-says-the-best-youtubers-will-never-leave-their-home/" target="_blank" rel="noopener">YouTube CEO says the best YouTubers will ‘never leave their home’</a></h3>
+      
+      <p class="article-desc">CEO Neal Mohan insisted that he isn’t worried about Netflix luring away YouTube&#39;s most popular creators.</p>
+      
+      <div class="article-footer">
+        <span>3/29 5:17 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://techcrunch.com/2026/03/29/project-hail-mary-becomes-amazon-mgms-biggest-box-office-hit/" target="_blank" rel="noopener">‘Project Hail Mary’ becomes Amazon MGM’s biggest box office hit</a></h3>
+      
+      <p class="article-desc">Amazon’s bet on “Project Hail Mary” has paid off handsomely.</p>
+      
+      <div class="article-footer">
+        <span>3/29 3:50 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://techcrunch.com/2026/03/29/soras-shutdown-could-be-a-reality-check-moment-for-ai-video/" target="_blank" rel="noopener">Sora’s shutdown could be a reality check moment for AI video</a></h3>
       
       <p class="article-desc">Is this just normal corporate strategy, or are we about to see a broader pullback on AI-generated video?</p>
       
       <div class="article-footer">
         <span>3/29 12:30 PM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://techcrunch.com/2026/03/29/techcrunch-mobility-when-a-robotaxi-has-to-call-911/" target="_blank" rel="noopener">TechCrunch Mobility: When a robotaxi has to call 911</a></h3>
       
       <p class="article-desc">Welcome back to TechCrunch Mobility — your central hub for news and insights on the future of transportation.</p>
       
       <div class="article-footer">
         <span>3/29 12:05 PM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
+    <div class="article-card "
+         data-topic="General Tech">
       <h3><a href="https://techcrunch.com/2026/03/29/sxsw-rebounds-as-a-top-networking-ideas-festival-for-founders-and-vcs/" target="_blank" rel="noopener">SXSW rebounds as a top networking, ideas festival for founders and VCs</a></h3>
       
       <p class="article-desc">SXSW made some changes this year, but some founders loved it all the same.</p>
       
       <div class="article-footer">
         <span>3/29 10:01 AM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
-      <h3><a href="https://techcrunch.com/2026/03/28/bluesky-leans-into-ai-with-attie-an-app-for-building-custom-feeds/" target="_blank" rel="noopener">Bluesky leans into AI with Attie, an app for building custom feeds</a></h3>
+  </section>
+  
+  <section class="source-section" id="src-4" data-source="FDA News (MedPage Today)">
+    <div class="source-heading">
+      FDA News (MedPage Today)<span class="source-count">9</span>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.medpagetoday.com/meetingcoverage/acc/120550" target="_blank" rel="noopener">Impella Flops for Acute Coronary Syndrome Patients Not in Shock</a></h3>
       
-      <p class="article-desc">Bluesky’s new app Attie uses AI to help people build custom feeds the open social networking protocol atproto.</p>
+      <p class="article-desc">(MedPage Today) -- NEW ORLEANS -- Microaxial flow pump circulatory support with the Impella device during percutaneous coronary intervention (PCI) didn&#39;t help outcomes for complex patients not in cardiogenic shock, two randomized trials at the...</p>
       
       <div class="article-footer">
-        <span>3/28 7:00 PM ET</span>
+        <span>3/29 4:56 PM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
-      <h3><a href="https://techcrunch.com/2026/03/28/mark-zuckerberg-texted-elon-musk-to-offer-help-with-doge/" target="_blank" rel="noopener">Mark Zuckerberg texted Elon Musk to offer help with DOGE</a></h3>
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.medpagetoday.com/meetingcoverage/acc/120549" target="_blank" rel="noopener">Pregnancy-Associated SCAD Is Often More Severe Yet Still Conservatively Managed</a></h3>
       
-      <p class="article-desc">While the relationship was once thorny enough that Musk challenged Zuckerberg to a cagefight, things seem to have warmed up by the early days of the second Trump administration.</p>
+      <p class="article-desc">(MedPage Today) -- NEW ORLEANS -- Women with pregnancy-associated spontaneous coronary artery dissection (P-SCAD) had a more severe presentation than those with SCAD who were not pregnant (NP-SCAD), according to a cohort study. Based on prospectively...</p>
       
       <div class="article-footer">
-        <span>3/28 5:23 PM ET</span>
+        <span>3/29 4:30 PM ET</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
     </div>
     
-    <div class="article-card ">
-      <h3><a href="https://techcrunch.com/2026/03/28/stanford-study-outlines-dangers-of-asking-ai-chatbots-for-personal-advice/" target="_blank" rel="noopener">Stanford study outlines dangers of asking AI chatbots for personal advice</a></h3>
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.medpagetoday.com/opinion/what-we-heard/120531" target="_blank" rel="noopener">&#39;Who Would Do Something So Stupid?&#39;: What We Heard This Week</a></h3>
       
-      <p class="article-desc">While there’s been plenty of debate about AI sycophancy, a new study by Stanford computer scientists attempts to measure how harmful that tendency might be.</p>
+      <p class="article-desc">(MedPage Today) -- &#34;Conceptually, you might think, &#39;Who would do something so stupid?&#39;&#34; -- Elliot Fishman, MD, of Johns Hopkins Medicine in Baltimore, discussing the malicious potential of deepfake X-rays. &#34;Sadly, younger physicians are about...</p>
       
       <div class="article-footer">
-        <span>3/28 4:45 PM ET</span>
+        <span>3/29 4:00 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.medpagetoday.com/meetingcoverage/acc/120548" target="_blank" rel="noopener">Lower Really Is Better for Secondary Prevention Cholesterol Targets</a></h3>
+      
+      <p class="article-desc">(MedPage Today) -- NEW ORLEANS -- The more intensive LDL cholesterol target guidelines recommended for secondary prevention in high-risk patients with atherosclerotic cardiovascular (CV) disease improved outcomes in a randomized trial from South...</p>
+      
+      <div class="article-footer">
+        <span>3/29 3:54 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.medpagetoday.com/meetingcoverage/acc/120547" target="_blank" rel="noopener">False-Negative CAC Findings That Equal Zero Cluster in Certain Groups, Study Finds</a></h3>
+      
+      <p class="article-desc">(MedPage Today) -- NEW ORLEANS -- Coronary artery calcium (CAC) scoring was disproportionately less reliable as a screen for atherosclerotic plaque for people of certain races and countries, according to the large international study GPS-CAD...</p>
+      
+      <div class="article-footer">
+        <span>3/29 3:40 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.medpagetoday.com/meetingcoverage/aad/120546" target="_blank" rel="noopener">Resistant Dermatomyositis Improves Quickly, Significantly With Combination Drug</a></h3>
+      
+      <p class="article-desc">(MedPage Today) -- DENVER -- Treatment-resistant dermatomyositis improved significantly with the investigational TYK2/JAK1 inhibitor brepocitinib, according to a randomized trial. The higher of two doses of brepocitinib improved the total dermatomyositis...</p>
+      
+      <div class="article-footer">
+        <span>3/29 2:59 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.medpagetoday.com/opinion/second-opinions/120530" target="_blank" rel="noopener">My Patients Are Asking for Leucovorin. Here&#39;s What I Tell Them.</a></h3>
+      
+      <p class="article-desc">(MedPage Today) -- When the White House announced it was exploring leucovorin as a treatment for autism, the calls from families started pouring in: &#34;Can you prescribe leucovorin for my child?&#34; We experience versions of this frequently: an unproven...</p>
+      
+      <div class="article-footer">
+        <span>3/29 12:00 PM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.medpagetoday.com/meetingcoverage/ebcc/120545" target="_blank" rel="noopener">Active Surveillance for DCIS Moves Closer to Standard Option but &#39;Not Quite There&#39;</a></h3>
+      
+      <p class="article-desc">(MedPage Today) -- Women who opted for active surveillance (AS) for ductal carcinoma in situ (DCIS) had ipsilateral invasive breast cancer survival (iiBCS) similar to patients who had immediate surgery, a randomized trial showed. After a total...</p>
+      
+      <div class="article-footer">
+        <span>3/29 9:13 AM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.medpagetoday.com/nephrology/generalnephrology/120539" target="_blank" rel="noopener">Complement Inhibitor Slowed Kidney Decline in IgA Nephropathy</a></h3>
+      
+      <p class="article-desc">(MedPage Today) -- Iptacopan (Fabhalta) slowed kidney function decline in adults with immunoglobulin A (IgA) nephropathy, according to final data from the phase III APPLAUSE-IgAN study. The study met its primary endpoint, showing an annualized...</p>
+      
+      <div class="article-footer">
+        <span>3/29 1:10 AM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+  </section>
+  
+  <section class="source-section" id="src-5" data-source="The Economist">
+    <div class="source-heading">
+      The Economist<span class="source-count">1</span>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.economist.com/finance-and-economics/2026/03/29/how-iran-is-making-a-mint-from-donald-trumps-war" target="_blank" rel="noopener">How Iran is making a mint from Donald Trump’s war</a></h3>
+      
+      <p class="article-desc">China is helping the Revolutionary Guards profit from Iranian crude</p>
+      
+      <div class="article-footer">
+        <span>3/29 7:44 AM ET</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+  </section>
+  
+  <section class="source-section" id="src-6" data-source="Fierce Pharma">
+    <div class="source-heading">
+      Fierce Pharma<span class="source-count">25</span>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/marketing/fierce-madness-2026-drug-name-tournament" target="_blank" rel="noopener">#FierceMadness: Elite Eight emerge in 2026 Drug Name Tournament—VOTE NOW</a></h3>
+      
+      <p class="article-desc">It’s time once again for Fierce Pharma Marketing’s annual #FierceMadness tournament. This time around, we&#39;re watching 64 newly minted drug names go head to head.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/marketing/bayer-signs-ludacris-one-day-multivitamin-campaign" target="_blank" rel="noopener">‘Health Doesn’t Need to Be Ludacris’: Bayer signs rapper-actor to multivitamin campaign</a></h3>
+      
+      <p class="article-desc">There’s no need to dive fast and furious into every single wellness trend, according to a Ludacris-fronted campaign from Bayer’s consumer health division.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/fierce-pharma-regulatory-tracker-2026" target="_blank" rel="noopener">Regulatory tracker: FDA signs off on Novo&#39;s once-weekly insulin Awiqli</a></h3>
+      
+      <p class="article-desc">In this tracker, Fierce Pharma is recording the regulatory progress of in-market products, including expansions into key geographies and new indications. Some of these updates may not meet the bar for standalone stories, but we think they are still worth mentioning.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/rocket-charts-measured-trajectory-new-gene-therapy-kresladi-after-clearance-launch-fda" target="_blank" rel="noopener">Rocket plots measured trajectory for new gene therapy Kresladi after clearance to launch from FDA</a></h3>
+      
+      <p class="article-desc">Rocket has announced that the FDA signed off on an accelerated approval for its hematopoietic stem cell-based gene therapy, Kresladi, also known as marnetegragene autotemcel, to treat certain children with severe leukocyte adhesion deficiency-1.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/pulse-check-lillys-glp-1-fortunes" target="_blank" rel="noopener">Pulse check on Lilly&#39;s GLP-1 fortunes</a></h3>
+      
+      <p class="article-desc">HSBC’s downgrade of Lilly is raising new questions about the GLP-1 market and the outlook for obesity treatments. The Fierce Pharma team breaks down what it could mean and what comes next.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/takeda-13b-reorg-india-generic-glp-1-floodgate-gilead-22b-buy-china-newco" target="_blank" rel="noopener">Fierce Pharma Asia—Takeda’s $1.3B reorg; India’s GLP-1 floodgates; Gilead’s $2.2B buy of a China NewCo</a></h3>
+      
+      <p class="article-desc">Takeda is launching a restructuring, targeting nearly $1.3 billion in annual savings. Generic versions of Novo Nordisk&#39;s semaglutide reached India in chaotic fashion. Gilead Sciences is paying up to $2.2 billion to purchase a Chinese &#34;NewCo.&#34; And more.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/recordati-weighing-cvc-capital-buyout-offer-126b" target="_blank" rel="noopener">Recordati confirms it&#39;s weighing CVC Capital buyout offer of $12.6B</a></h3>
+      
+      <p class="article-desc">CVC Capital Partners has offered to buy out the remaining shares in Italian pharma Recordati for 10.9 billion euros ($12.6 billion). The investment firm, which already has a 47% stake in Recordati, intends to delist the company. Recordati confirmed the offer on Thursday.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/questions-swirl-around-attr-competition-alnylam-plots-path-market-leadership-amvuttra" target="_blank" rel="noopener">As questions swirl around ATTR competition, Alnylam plots path to market leadership for Amvuttra</a></h3>
+      
+      <p class="article-desc">Addressing pressing questions about the upcoming ATTR-CM competition and market opportunity, Alnylam management on Tuesday outlined a path for Amvuttra to become the revenue leader in an expansive ATTR-CM space of more than 75,000 U.S.-treated patients by 2030.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/manufacturing/egg-based-drugmaker-neion-bio-emerges-stealth-cook-multi-product-biosimilar-collab" target="_blank" rel="noopener">Egg-based drugmaker Neion Bio emerges from stealth to cook up multi-product biosimilar collab</a></h3>
+      
+      <p class="article-desc">The new company, looking to eliminate costly manufacturing bottlenecks by producing biologic medicines in chicken eggs, has now lined up a commercial taker.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/manufacturing/hoviones-expansions-come-online-cdmo-meets-industrys-dual-supply-and-sourcing-zeal" target="_blank" rel="noopener">As expansions come online, CDMO Hovione aims to meet industry&#39;s &#39;dual supply and sourcing&#39; zeal: exec</a></h3>
+      
+      <p class="article-desc">With key expansions coming to fruition on either side of the pond, specialist CDMO Hovione is making sure that drugmakers can access its particle engineering expertise across multiple geographies.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/marketing/genentech-walks-walk-lupus-sponsoring-annual-event" target="_blank" rel="noopener">Genentech walks the walk in lupus as sponsor of annual awareness and fundraising event</a></h3>
+      
+      <p class="article-desc">Roche’s Genentech is backing this year&#39;s Walk to End Lupus Now, taking up a sponsorship opportunity claimed by GSK in previous years.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/outspoken-acip-member-steps-down-amid-vaccine-panel-controversy-legal-bulwark" target="_blank" rel="noopener">Outspoken ACIP member steps down amid vaccine panel uncertainty: reports</a></h3>
+      
+      <p class="article-desc">After becoming a prominent public face of the CDC’s revamped Advisory Committee on Immunization Practices, Robert Malone, M.D., has reportedly stepped down from his role, citing mounting drama in recent weeks.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/marketing/how-pharma-marketers-can-capitalize-hcps-ai-social-media-and-streaming-habits" target="_blank" rel="noopener">How pharma marketers can capitalize on HCPs’ AI, social media and streaming habits</a></h3>
+      
+      <p class="article-desc">A new report from Assembled Intelligence and inVibe sheds light on how HCPs are using digital technologies in their work—and what that means for marketers.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/corcepts-lead-drug-bounces-back-fda-snub-1st-approval-lifyorli-ovarian-cancer" target="_blank" rel="noopener">Corcept&#39;s lead drug bounces back from FDA snub with different approval as Lifyorli in ovarian cancer</a></h3>
+      
+      <p class="article-desc">The FDA has given the all-clear to Corcept’s class-first Lifyorli (relacorilant) to treat adults with platinum-resistant epithelial ovarian, fallopian tube or primary peritoneal cancer after one to three prior lines of systemic treatment, at least one of which had to include bevacizumab.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/ionis-slashes-tryngolzas-price-tag-down-ahead-anticipated-expansion-wider-shtg-market" target="_blank" rel="noopener">Ionis slashes Tryngolza&#39;s price tag by 93% ahead of anticipated label expansion</a></h3>
+      
+      <p class="article-desc">The company is lowering the annual list price of Tryngolza from $595,000 to $40,000 ahead of an anticipated expansion into the much larger market of severe hypertriglyceridemia.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/fda-approves-denali-hunter-syndrome-drug-breaking-streak-rare-disease-rejections" target="_blank" rel="noopener">FDA approves Denali&#39;s Hunter syndrome drug, handing rare disease community a win</a></h3>
+      
+      <p class="article-desc">The FDA has approved Denali Therapeutics’ enzyme replacement therapy for a genetic lysosomal storage disease after a string of high-profile rejections for rare disease candidates.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/marketing/novartis-sued-breast-cancer-patient-sharing-health-data-branded-drug-websites" target="_blank" rel="noopener">Novartis sued by breast cancer patient over branded drug websites’ data-sharing practices</a></h3>
+      
+      <p class="article-desc">Novartis is facing a class-action lawsuit alleging it shared, without patients’ consent, sensitive health information it collected from visitors to its consumer-facing branded drug websites.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/uptake-boehringers-jascayd-trending-above-ofev-decade-ago" target="_blank" rel="noopener">As Boehringer touts US launches, board chairman worries EU is &#39;falling further behind&#39;</a></h3>
+      
+      <p class="article-desc">While touting the uptake of new drugs Hernexeos and Jascayd in the U.S., Boehringer Ingelheim&#39;s chairman leveled criticism of regulatory red tape in Europe, where the treatments have yet to be approved.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/biogen-pays-20m-upfront-tap-alteogens-subq-delivery-tech" target="_blank" rel="noopener">Biogen pays $20M upfront to tap into Alteogen&#39;s subQ delivery tech</a></h3>
+      
+      <p class="article-desc">Biogen will hand Alteogen $20 million upfront for help developing subcutaneous formulations of two unnamed biologics using Alteogen’s delivery technology.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/takeda-targets-13b-cost-savings-further-restructuring" target="_blank" rel="noopener">Takeda targets $1.3B in cost savings in further restructuring</a></h3>
+      
+      <p class="article-desc">Takeda is setting the stage for a sweeping new round of restructuring, aiming to streamline operations to bankroll upcoming drug launches and late-stage pipeline development.&amp;nbsp;</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/manufacturing/ucb-will-build-huge-biologics-plant-near-its-hq-atlanta" target="_blank" rel="noopener">UCB unveils plan to build $2B biologics plant near its US headquarters in Atlanta</a></h3>
+      
+      <p class="article-desc">UCB will build a new manufacturing facility near its U.S. headquarters in Atlanta, Georgia. It will become the first major manufacturing facility in the U.S. for the rapidly growing Belgium-based company and will produce biologics.&amp;nbsp;The company did not reveal how much it plans to spend to build the plant.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/marketing/abivax-hires-commercial-chief-infuse-entyvio-expertise-launch-preparations" target="_blank" rel="noopener">Abivax hires commercial chief from Takeda to infuse Entyvio expertise into IBD launch prep</a></h3>
+      
+      <p class="article-desc">Abivax has appointed Michael Nesrallah as its chief commercial officer, putting one of the people who turned Entyvio into a blockbuster in charge of preparations for its ulcerative colitis launch.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/marketing/immunitybio-faces-fda-warning-letter-over-anktiva-promotions-tv-ad-podcast-episode" target="_blank" rel="noopener">ImmunityBio hit with FDA warning letter over Anktiva promotions in TV ad, podcast episode</a></h3>
+      
+      <p class="article-desc">The FDA this month issued a warning letter to ImmunityBio regarding promotional statements about cancer drug Anktiva that the agency claims are “false or misleading.”</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/marketing/cologuard-campaign-reunites-full-house-stars-give-talk-about-colon-cancer-screening" target="_blank" rel="noopener">Cologuard campaign reunites ‘Full House’ stars to give ‘The Talk’ about colon cancer screening</a></h3>
+      
+      <p class="article-desc">The new initiative stars Jodie Sweetin and John Stamos, who played Stephanie Tanner and her Uncle Jesse on “Full House,” having a candid chat about starting colorectal cancer screening at age 45.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
+        
+        
+      </div>
+    </div>
+    
+    <div class="article-card "
+         data-topic="General Tech">
+      <h3><a href="https://www.fiercepharma.com/pharma/karyopharm-touts-mixed-results-expovio-expansion-effort" target="_blank" rel="noopener">Karyopharm, looking to jump-start Xpovio, reports mixed results in myelofibrosis</a></h3>
+      
+      <p class="article-desc">Karyopharm has provided mixed results from a phase 3 trial testing Xpovio in combination with Incyte and Novartis’ blockbuster Jakafi in patients with first-line myelofibrosis. The company will discuss the results with the FDA in hopes of gaining an approval in the indication.</p>
+      
+      <div class="article-footer">
+        <span>—</span>
+        <span class="topic-badge">General Tech</span>
         
         
       </div>
@@ -777,18 +1616,86 @@
 </main>
 
 <script>
-  function getTheme() {
-    return localStorage.getItem("theme") || "dark";
-  }
+  // Theme
+  function getTheme() { return localStorage.getItem("theme") || "dark"; }
   function setTheme(t) {
     document.documentElement.setAttribute("data-theme", t);
-    document.getElementById("theme-toggle").textContent = t === "dark" ? "Light" : "Dark";
+    document.getElementById("theme-btn").textContent = t === "dark" ? "Light" : "Dark";
     localStorage.setItem("theme", t);
   }
-  function toggleTheme() {
-    setTheme(getTheme() === "dark" ? "light" : "dark");
-  }
+  function toggleTheme() { setTheme(getTheme() === "dark" ? "light" : "dark"); }
   setTheme(getTheme());
+
+  // Topic filtering
+  let currentTopic = "all";
+
+  function filterTopic(btn, topic) {
+    currentTopic = topic;
+
+    // Update tab styles
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    btn.classList.add("active");
+
+    const isAll = topic === "all";
+    const sourceNav = document.getElementById("source-nav");
+    const noResults = document.getElementById("no-results");
+
+    // Highlights: filter cards, hide section if none visible
+    const highlightCards = document.querySelectorAll(".highlight-card");
+    let visibleHighlights = 0;
+    highlightCards.forEach(c => {
+      const show = isAll || c.dataset.topic === topic;
+      c.style.display = show ? "" : "none";
+      if (show) visibleHighlights++;
+    });
+    const highlightSection = document.getElementById("highlights-section");
+    if (highlightSection) highlightSection.style.display = visibleHighlights > 0 ? "" : "none";
+
+    // Article cards + source sections
+    let anyVisible = false;
+    document.querySelectorAll(".source-section").forEach((section, i) => {
+      const cards = section.querySelectorAll(".article-card");
+      let sectionVisible = 0;
+      cards.forEach(c => {
+        const show = isAll || c.dataset.topic === topic;
+        c.style.display = show ? "" : "none";
+        if (show) sectionVisible++;
+      });
+      const show = sectionVisible > 0;
+      section.style.display = show ? "" : "none";
+      if (show) anyVisible = true;
+
+      // Source nav link
+      const navLink = document.getElementById("nav-" + (i + 1));
+      if (navLink) navLink.style.display = show ? "" : "none";
+    });
+
+    sourceNav.style.display = isAll ? "" : "none";
+    noResults.classList.toggle("visible", !isAll && !anyVisible);
+
+    updateCounts();
+  }
+
+  function updateCounts() {
+    // Count all articles
+    const allCards = document.querySelectorAll(".article-card");
+    document.getElementById("count-all").textContent = allCards.length;
+
+    // Count per topic
+    const topicCounts = {};
+    allCards.forEach(c => {
+      topicCounts[c.dataset.topic] = (topicCounts[c.dataset.topic] || 0) + 1;
+    });
+
+    document.querySelectorAll(".tab[data-topic]").forEach(tab => {
+      const topic = tab.dataset.topic;
+      if (topic === "all") return;
+      const span = tab.querySelector(".count");
+      if (span) span.textContent = topicCounts[topic] || 0;
+    });
+  }
+
+  updateCounts();
 </script>
 
 </body>

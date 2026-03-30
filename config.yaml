@@ -1,17 +1,63 @@
 interests:
-  - AI and machine learning
-  - startup funding and venture capital
-  - developer tools and infrastructure
-  - B2B SaaS and product
+  - AI regulation and policy (FDA AI guidance, EU AI Act, RAISE Act)
+  - pharma and life sciences AI validation, data integrity, GxP compliance
+  - financial services AI governance and model risk (SR 11-7, SS1/23)
+  - AI agents and LLM product development
+  - geopolitics and economic policy
+  - startups and venture capital
+  - higher education reform and civic innovation
+
+topics:
+  - AI Regulation & Policy
+  - Pharma & Life Sciences
+  - FinServ & Model Risk
+  - AI & LLM Development
+  - Geopolitics & Economics
+  - Startups & VC
+  - Higher Ed & Civic
+  - General Tech
 
 sources:
+  # AI & Tech news
   - name: TechCrunch
     url: https://techcrunch.com/feed/
   - name: The Verge
     url: https://www.theverge.com/rss/index.xml
-  - name: Hacker News
-    url: https://news.ycombinator.com/rss
   - name: MIT Technology Review
     url: https://www.technologyreview.com/feed/
-  # - name: The Information (free)
-  #   url: https://www.theinformation.com/feed  # requires subscription
+  - name: Hacker News
+    url: https://news.ycombinator.com/rss
+  - name: VentureBeat AI
+    url: https://venturebeat.com/category/ai/feed/
+
+  # AI policy & regulation
+  - name: Import AI (Jack Clark)
+    url: https://importai.substack.com/feed
+  - name: The Gradient
+    url: https://thegradient.pub/rss/
+
+  # Pharma / Life Sciences
+  - name: FDA News (MedPage Today)
+    url: https://www.medpagetoday.com/rss/headlines.xml
+  - name: Fierce Pharma
+    url: https://www.fiercepharma.com/rss/xml
+
+  # Financial services & model risk
+  - name: American Banker
+    url: https://www.americanbanker.com/feed
+
+  # Startups & VC
+  - name: Crunchbase News
+    url: https://news.crunchbase.com/feed/
+  - name: StrictlyVC
+    url: https://strictlyvc.com/feed/
+
+  # Geopolitics & Economics
+  - name: Foreign Affairs (free)
+    url: https://www.foreignaffairs.com/rss.xml
+  - name: The Economist
+    url: https://www.economist.com/finance-and-economics/rss.xml
+
+  # Higher Ed & Civic
+  - name: Inside Higher Ed
+    url: https://www.insidehighered.com/rss.xml
