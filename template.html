@@ -157,7 +157,7 @@
     <h2>Settings</h2>
     <div class="modal-section">
       <label>GitHub Token (for pinning)</label>
-      <p>To save pins across devices, enter a GitHub personal access token with <code>contents: write</code> scope for the <code>daily_briefings</code> repo. Stored only in your browser's localStorage — never committed anywhere.</p>
+      <p>Pins are saved locally in your browser automatically. To sync pins across devices (phone + desktop), enter a GitHub personal access token with <code>contents: write</code> scope for the <code>daily_briefings</code> repo. Stored only in your browser — never committed.</p>
       <input type="password" id="token-input" placeholder="ghp_..." autocomplete="off">
       <div class="token-status" id="token-status"></div>
       <div class="modal-actions">
@@ -330,40 +330,67 @@
   function clearToken() { localStorage.removeItem("gh_token"); document.getElementById("token-input").value = ""; setTokenStatus("Token cleared.", ""); }
 
   // State / pins
+  // localStorage is the primary store — always works, no token needed.
+  // GitHub state.json is the sync layer — used when a token is set.
   let cachedState = null;
   let cachedSha   = null;
 
+  function loadLocalPins() {
+    try { return JSON.parse(localStorage.getItem("pins") || "[]"); } catch(e) { return []; }
+  }
+  function saveLocalPins(pins) {
+    localStorage.setItem("pins", JSON.stringify(pins));
+  }
+
   async function fetchState() {
+    // Always start with localStorage pins so they appear instantly
+    cachedState = { seen_highlights: [], pins: loadLocalPins() };
+
+    // Try to get sha (needed for writes) and merge any GitHub-only pins
     try {
       const token = localStorage.getItem("gh_token");
       const headers = token ? { Authorization: `token ${token}` } : {};
       const resp = await fetch(STATE_API, { headers, cache: "no-store" });
-      if (!resp.ok) throw new Error(resp.status);
-      const data = await resp.json();
-      cachedSha = data.sha;
-      cachedState = JSON.parse(atob(data.content.replace(/\n/g, "")));
-    } catch (e) {
-      try {
-        const resp = await fetch(`https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/docs/state.json?_=${Date.now()}`);
-        cachedState = await resp.json();
-      } catch (e2) {
-        cachedState = { seen_highlights: [], pins: [] };
+      if (resp.ok) {
+        const data = await resp.json();
+        cachedSha = data.sha;
+        const remote = JSON.parse(atob(data.content.replace(/\n/g, "")));
+        // Merge: union of local + remote pins by URL, local takes precedence
+        const localUrls = new Set(cachedState.pins.map(p => p.url));
+        const remotePins = (remote.pins || []).filter(p => !localUrls.has(p.url));
+        cachedState.pins = [...cachedState.pins, ...remotePins];
+        saveLocalPins(cachedState.pins);
       }
-    }
-    cachedState.pins = cachedState.pins || [];
+    } catch (e) { /* no token or network error — local pins still work */ }
+
     return cachedState;
   }
 
   async function writeState(state) {
+    // Always save locally first
+    saveLocalPins(state.pins);
+
+    // Then sync to GitHub if we have a token + sha
     const token = localStorage.getItem("gh_token");
-    if (!token) { toast("Add a GitHub token in Settings to save pins across devices."); return false; }
-    if (!cachedSha) { toast("Could not get file sha — try refreshing."); return false; }
+    if (!token) return true; // local save succeeded, no cross-device sync
+    if (!cachedSha) return true; // can't write without sha, but local is saved
+
     const resp = await fetch(STATE_API, {
       method: "PUT",
       headers: { Authorization: `token ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify({ message: "Update pins", content: btoa(unescape(encodeURIComponent(JSON.stringify(state, null, 2)))), sha: cachedSha, branch: GITHUB_BRANCH })
     });
-    if (!resp.ok) { const err = await resp.json().catch(() => ({})); toast("Save failed: " + (err.message || resp.status)); return false; }
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      if (err.message && err.message.includes("sha")) {
+        // sha conflict (another device wrote) — refresh sha silently
+        try {
+          const r2 = await fetch(STATE_API, { headers: { Authorization: `token ${token}` }, cache: "no-store" });
+          if (r2.ok) { const d2 = await r2.json(); cachedSha = d2.sha; }
+        } catch(e) {}
+      }
+      return false;
+    }
     const data = await resp.json();
     cachedSha = data.content.sha;
     cachedState = state;
@@ -412,8 +439,8 @@
     else { cachedState.pins.push({ url, title, source, date, topic, pinned_at: new Date().toISOString() }); }
     renderPins(cachedState.pins);
     syncPinButtons(cachedState.pins);
-    const ok = await writeState(cachedState);
-    if (ok) { toast(wasPinned ? "Unpinned." : "Pinned."); }
+    await writeState(cachedState);
+    toast(wasPinned ? "Unpinned." : "Pinned.");
   }
 
   // Topic filter
