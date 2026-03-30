@@ -6,407 +6,197 @@
   <title>Daily Briefing</title>
   <style>
     :root[data-theme="dark"] {
-      --bg: #0f0f0f;
-      --bg-card: #161616;
-      --bg-highlight: #141f14;
-      --bg-panel: #131313;
-      --border: #242424;
-      --border-highlight: #2e4a2e;
-      --text: #e4e4e4;
-      --text-muted: #666;
-      --text-link: #6aadee;
-      --accent: #4e8f4e;
-      --tab-active-bg: #1e1e1e;
-      --tab-active-text: #e4e4e4;
-      --tag-bg: #1e1e1e;
-      --score-high-bg: rgba(78,143,78,0.15);
-      --score-high-fg: #6abf6a;
-      --score-mid-bg: rgba(180,150,40,0.15);
-      --score-mid-fg: #c8a84a;
-      --score-low-bg: rgba(100,100,100,0.12);
-      --score-low-fg: #555;
+      --bg: #0f0f0f; --bg-card: #161616; --bg-highlight: #141f14;
+      --bg-pin: #1a1710; --bg-panel: #131313;
+      --border: #242424; --border-highlight: #2e4a2e; --border-pin: #4a4020;
+      --text: #e4e4e4; --text-muted: #666; --text-link: #6aadee;
+      --accent: #4e8f4e; --accent-pin: #c8a84a;
+      --tab-active-bg: #1e1e1e; --tab-active-text: #e4e4e4; --tag-bg: #1e1e1e;
+      --score-high-bg: rgba(78,143,78,0.15); --score-high-fg: #6abf6a;
+      --score-mid-bg: rgba(180,150,40,0.15); --score-mid-fg: #c8a84a;
+      --score-low-bg: rgba(100,100,100,0.12); --score-low-fg: #555;
+      --pin-active: #c8a84a;
     }
     :root[data-theme="light"] {
-      --bg: #f7f7f5;
-      --bg-card: #ffffff;
-      --bg-highlight: #f0f7f0;
-      --bg-panel: #f0f0ee;
-      --border: #e2e2e2;
-      --border-highlight: #aacfaa;
-      --text: #1c1c1c;
-      --text-muted: #888;
-      --text-link: #1a56b0;
-      --accent: #2e7230;
-      --tab-active-bg: #ffffff;
-      --tab-active-text: #1c1c1c;
-      --tag-bg: #efefef;
-      --score-high-bg: rgba(46,114,48,0.1);
-      --score-high-fg: #2e7230;
-      --score-mid-bg: rgba(150,120,20,0.1);
-      --score-mid-fg: #8a6e10;
-      --score-low-bg: rgba(120,120,120,0.08);
-      --score-low-fg: #aaa;
+      --bg: #f7f7f5; --bg-card: #ffffff; --bg-highlight: #f0f7f0;
+      --bg-pin: #fdf8ec; --bg-panel: #f0f0ee;
+      --border: #e2e2e2; --border-highlight: #aacfaa; --border-pin: #d4c070;
+      --text: #1c1c1c; --text-muted: #888; --text-link: #1a56b0;
+      --accent: #2e7230; --accent-pin: #8a6e10;
+      --tab-active-bg: #ffffff; --tab-active-text: #1c1c1c; --tag-bg: #efefef;
+      --score-high-bg: rgba(46,114,48,0.1); --score-high-fg: #2e7230;
+      --score-mid-bg: rgba(150,120,20,0.1); --score-mid-fg: #8a6e10;
+      --score-low-bg: rgba(120,120,120,0.08); --score-low-fg: #aaa;
+      --pin-active: #8a6e10;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      font-size: 15px;
-    }
-
-    /* ── Header ── */
-    header {
-      border-bottom: 1px solid var(--border);
-      padding: 16px 0 0;
-      position: sticky;
-      top: 0;
-      background: var(--bg);
-      z-index: 20;
-    }
-    .header-top {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 24px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    header { border-bottom: 1px solid var(--border); padding: 16px 0 0; position: sticky; top: 0; background: var(--bg); z-index: 20; }
+    .header-top { max-width: 900px; margin: 0 auto; padding: 0 24px 14px; display: flex; justify-content: space-between; align-items: center; }
     .site-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
-    .header-right { display: flex; align-items: center; gap: 10px; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
     .generated-at { font-size: 12px; color: var(--text-muted); }
 
-    button {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 3px 10px;
-      border-radius: 5px;
-      font-size: 12px;
-      font-family: inherit;
-      transition: border-color 0.15s, color 0.15s;
-    }
+    button { background: none; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; padding: 3px 10px; border-radius: 5px; font-size: 12px; font-family: inherit; transition: border-color 0.15s, color 0.15s; }
     button:hover { border-color: var(--text-muted); color: var(--text); }
 
-    /* ── Topic tabs ── */
-    .tabs-wrap {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 24px;
-      display: flex;
-      gap: 2px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
+    .tabs-wrap { max-width: 900px; margin: 0 auto; padding: 0 24px; display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
     .tabs-wrap::-webkit-scrollbar { display: none; }
-
-    .tab {
-      flex-shrink: 0;
-      padding: 7px 13px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-muted);
-      border: 1px solid transparent;
-      border-bottom: none;
-      border-radius: 5px 5px 0 0;
-      cursor: pointer;
-      background: none;
-      transition: color 0.15s, background 0.15s;
-    }
+    .tab { flex-shrink: 0; padding: 7px 13px; font-size: 12px; font-weight: 500; color: var(--text-muted); border: 1px solid transparent; border-bottom: none; border-radius: 5px 5px 0 0; cursor: pointer; background: none; }
     .tab:hover { color: var(--text); }
-    .tab.active {
-      background: var(--tab-active-bg);
-      color: var(--tab-active-text);
-      border-color: var(--border);
-      border-bottom-color: var(--bg);
-    }
-    .tab .count {
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-left: 4px;
-    }
-    .tab.active .count { color: var(--text-muted); }
+    .tab.active { background: var(--tab-active-bg); color: var(--tab-active-text); border-color: var(--border); border-bottom-color: var(--bg); }
+    .tab .count { font-size: 10px; color: var(--text-muted); margin-left: 4px; }
 
-    /* ── Layout ── */
-    main {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 24px 24px 60px;
-    }
+    main { max-width: 900px; margin: 0 auto; padding: 24px 24px 60px; }
+    .section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 
-    .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.9px;
-      color: var(--text-muted);
-      margin-bottom: 14px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-    }
+    .stats { display: flex; gap: 16px; font-size: 12px; color: var(--text-muted); margin-bottom: 24px; padding: 9px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; flex-wrap: wrap; }
 
-    /* ── Stats ── */
-    .stats {
-      display: flex;
-      gap: 16px;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 24px;
-      padding: 9px 14px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      flex-wrap: wrap;
-    }
-
-    /* ── Errors ── */
     .errors-wrap { margin-bottom: 20px; }
-    .errors-wrap details {
-      font-size: 13px;
-      color: var(--text-muted);
-      padding: 9px 14px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-    }
+    .errors-wrap details { font-size: 13px; color: var(--text-muted); padding: 9px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; }
     .errors-wrap summary { cursor: pointer; }
     .errors-wrap p { margin-top: 4px; font-size: 12px; }
 
-    /* ── Highlights ── */
-    .highlights-section { margin-bottom: 36px; }
+    /* Pins */
+    #pins-section { margin-bottom: 32px; display: none; }
+    .pin-card { background: var(--bg-pin); border: 1px solid var(--border-pin); border-radius: 8px; padding: 13px 16px; margin-bottom: 8px; position: relative; }
+    .pin-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+    .pin-card-meta { display: flex; align-items: center; gap: 8px; }
+    .pin-source { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-pin); }
+    .pin-date { font-size: 11px; color: var(--text-muted); }
+    .pin-card h3 { font-size: 14px; font-weight: 600; line-height: 1.4; padding-right: 26px; }
+    .pin-card h3 a { color: var(--text); text-decoration: none; }
+    .pin-card h3 a:hover { color: var(--text-link); text-decoration: underline; }
 
-    .highlight-card {
-      background: var(--bg-highlight);
-      border: 1px solid var(--border-highlight);
-      border-radius: 8px;
-      padding: 14px 17px;
-      margin-bottom: 9px;
-    }
-    .highlight-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 5px;
-    }
+    /* Sources panel */
+    .sources-panel { margin-bottom: 24px; }
+    .sources-panel details { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .sources-panel summary { padding: 10px 16px; cursor: pointer; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: space-between; list-style: none; }
+    .sources-panel summary::-webkit-details-marker { display: none; }
+    .sources-panel summary .summary-right { display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 400; color: var(--text-muted); }
+    .edit-link { color: var(--text-link); text-decoration: none; font-size: 12px; }
+    .edit-link:hover { text-decoration: underline; }
+    .sources-list { border-top: 1px solid var(--border); padding: 10px 0; }
+    .source-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 16px; font-size: 13px; }
+    .source-row:hover { background: var(--bg-panel); }
+    .source-row-name { font-weight: 500; }
+    .source-row-url { font-size: 11px; color: var(--text-muted); max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Highlights */
+    .highlights-section { margin-bottom: 36px; }
+    .highlight-card { background: var(--bg-highlight); border: 1px solid var(--border-highlight); border-radius: 8px; padding: 14px 17px; margin-bottom: 9px; position: relative; }
+    .highlight-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
     .highlight-meta { display: flex; align-items: center; gap: 8px; }
-    .highlight-source {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--accent);
-    }
-    .topic-badge {
-      font-size: 10px;
-      padding: 1px 7px;
-      border-radius: 4px;
-      background: var(--tag-bg);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-    }
+    .highlight-source { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); }
+    .topic-badge { font-size: 10px; padding: 1px 7px; border-radius: 4px; background: var(--tag-bg); border: 1px solid var(--border); color: var(--text-muted); }
     .highlight-date { font-size: 11px; color: var(--text-muted); }
-    .highlight-card h3 {
-      font-size: 15px;
-      font-weight: 600;
-      line-height: 1.4;
-      margin-bottom: 7px;
-    }
+    .highlight-card h3 { font-size: 15px; font-weight: 600; line-height: 1.4; margin-bottom: 7px; padding-right: 28px; }
     .highlight-card h3 a { color: var(--text); text-decoration: none; }
     .highlight-card h3 a:hover { color: var(--text-link); text-decoration: underline; }
-    .why-it-matters {
-      font-size: 13px;
-      color: var(--text-muted);
-      padding-left: 10px;
-      border-left: 2px solid var(--accent);
-      line-height: 1.5;
-    }
+    .why-it-matters { font-size: 13px; color: var(--text-muted); padding-left: 10px; border-left: 2px solid var(--accent); line-height: 1.5; }
 
-    /* ── Source nav ── */
-    .source-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-bottom: 24px;
-    }
-    .source-nav a {
-      font-size: 12px;
-      color: var(--text-muted);
-      text-decoration: none;
-      padding: 2px 9px;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      transition: border-color 0.15s, color 0.15s;
-    }
+    /* Pin button */
+    .pin-btn { border: none !important; background: none !important; padding: 3px 5px; cursor: pointer; color: var(--text-muted); font-size: 15px; line-height: 1; border-radius: 4px; transition: color 0.15s; flex-shrink: 0; position: absolute; top: 11px; right: 11px; }
+    .pin-btn:hover { color: var(--text); }
+    .pin-btn.pinned { color: var(--pin-active) !important; }
+
+    /* Source nav */
+    .source-nav { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 24px; }
+    .source-nav a { font-size: 12px; color: var(--text-muted); text-decoration: none; padding: 2px 9px; border: 1px solid var(--border); border-radius: 4px; transition: border-color 0.15s, color 0.15s; }
     .source-nav a:hover { color: var(--text); border-color: var(--text-muted); }
-    .source-nav a.hidden { display: none; }
 
-    /* ── Source sections ── */
+    /* Articles */
     .source-section { margin-bottom: 32px; }
-    .source-section.hidden { display: none; }
-
-    .source-heading {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 2px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
-    }
-    .source-count {
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--text-muted);
-      margin-left: 6px;
-    }
-
-    /* ── Article cards ── */
-    .article-card {
-      padding: 11px 0;
-      border-bottom: 1px solid var(--border);
-    }
+    .source-heading { font-size: 15px; font-weight: 700; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 2px; }
+    .source-count { font-size: 12px; font-weight: 400; color: var(--text-muted); margin-left: 6px; }
+    .article-card { padding: 11px 0; border-bottom: 1px solid var(--border); position: relative; }
     .article-card:last-child { border-bottom: none; }
-    .article-card.is-highlight {
-      background: var(--bg-highlight);
-      border: 1px solid var(--border-highlight);
-      border-radius: 6px;
-      padding: 10px 13px;
-      margin: 5px 0;
-    }
-    .article-card.hidden { display: none; }
-    .article-card h3 {
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 1.45;
-      margin-bottom: 4px;
-    }
+    .article-card.is-highlight { background: var(--bg-highlight); border: 1px solid var(--border-highlight); border-radius: 6px; padding: 10px 13px; margin: 5px 0; }
+    .article-card h3 { font-size: 14px; font-weight: 500; line-height: 1.45; margin-bottom: 4px; padding-right: 26px; }
     .article-card h3 a { color: var(--text); text-decoration: none; }
     .article-card h3 a:hover { color: var(--text-link); text-decoration: underline; }
-    .article-desc {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 5px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      line-height: 1.4;
-    }
-    .article-footer {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .score-badge {
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-    }
+    .article-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; }
+    .article-footer { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-muted); }
+    .score-badge { padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
     .score-high { background: var(--score-high-bg); color: var(--score-high-fg); }
     .score-mid  { background: var(--score-mid-bg);  color: var(--score-mid-fg); }
     .score-low  { background: var(--score-low-bg);  color: var(--score-low-fg); }
 
-    /* ── Sources panel ── */
-    .sources-panel {
-      margin-bottom: 24px;
-    }
-    .sources-panel details {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    .sources-panel summary {
-      padding: 10px 16px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      list-style: none;
-    }
-    .sources-panel summary::-webkit-details-marker { display: none; }
-    .sources-panel summary .summary-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--text-muted);
-    }
-    .sources-panel summary .edit-link {
-      color: var(--text-link);
-      text-decoration: none;
-      font-size: 12px;
-    }
-    .sources-panel summary .edit-link:hover { text-decoration: underline; }
-    .sources-list {
-      border-top: 1px solid var(--border);
-      padding: 12px 0;
-    }
-    .source-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 5px 16px;
-      font-size: 13px;
-    }
-    .source-row:hover { background: var(--bg-panel); }
-    .source-row-name { font-weight: 500; }
-    .source-row-url {
-      font-size: 11px;
-      color: var(--text-muted);
-      max-width: 380px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    /* ── Empty state ── */
-    .empty {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-    .no-results {
-      padding: 24px 0;
-      color: var(--text-muted);
-      font-size: 14px;
-      text-align: center;
-      display: none;
-    }
+    .no-results { padding: 24px 0; color: var(--text-muted); font-size: 14px; text-align: center; display: none; }
     .no-results.visible { display: block; }
 
-    @media (max-width: 600px) {
-      .header-top { flex-wrap: wrap; gap: 8px; }
-      .generated-at { display: none; }
-      .source-row-url { display: none; }
-    }
+    /* Settings modal */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; width: 480px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+    .modal h2 { font-size: 15px; font-weight: 700; margin-bottom: 18px; }
+    .modal-section { margin-bottom: 20px; }
+    .modal-section label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; }
+    .modal-section p { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5; }
+    .modal-section input[type="password"] { width: 100%; padding: 8px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); font-size: 13px; font-family: monospace; }
+    .modal-section input:focus { outline: none; border-color: var(--text-muted); }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+    .btn-primary { background: var(--accent) !important; border-color: var(--accent) !important; color: #fff !important; padding: 5px 14px; }
+    .btn-primary:hover { opacity: 0.85; }
+    .token-status { font-size: 12px; margin-top: 6px; min-height: 18px; }
+    .token-status.ok { color: var(--accent); }
+    .token-status.err { color: #e05a5a; }
+
+    /* Toast */
+    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-card); border: 1px solid var(--border); color: var(--text); font-size: 13px; padding: 8px 18px; border-radius: 20px; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 200; white-space: nowrap; }
+    #toast.show { opacity: 1; }
+
+    @media (max-width: 600px) { .header-top { flex-wrap: wrap; gap: 8px; } .generated-at { display: none; } .source-row-url { display: none; } }
   </style>
 </head>
 <body>
+
+<div class="modal-overlay" id="settings-modal" onclick="if(event.target===this)closeSettings()">
+  <div class="modal">
+    <h2>Settings</h2>
+    <div class="modal-section">
+      <label>GitHub Token (for pinning)</label>
+      <p>To save pins across devices, enter a GitHub personal access token with <code>contents: write</code> scope for the <code>daily_briefings</code> repo. Stored only in your browser's localStorage — never committed anywhere.</p>
+      <input type="password" id="token-input" placeholder="ghp_..." autocomplete="off">
+      <div class="token-status" id="token-status"></div>
+      <div class="modal-actions">
+        <button onclick="clearToken()">Clear</button>
+        <button class="btn-primary" onclick="saveToken()">Save token</button>
+      </div>
+    </div>
+    <div class="modal-section">
+      <label>Sources &amp; Interests</label>
+      <p>Edit <code>config.yaml</code> in the repo. Changes take effect on the next morning run.</p>
+      <div class="modal-actions">
+        <a href="{{ github_config_url }}" target="_blank" rel="noopener">
+          <button>Open config.yaml on GitHub →</button>
+        </a>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button onclick="closeSettings()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
 
 <header>
   <div class="header-top">
     <div class="site-title">Daily Briefing</div>
     <div class="header-right">
       <span class="generated-at">{{ generated_at }}</span>
+      <button onclick="openSettings()">Settings</button>
       <button onclick="toggleTheme()" id="theme-btn">Light</button>
     </div>
   </div>
   <div class="tabs-wrap">
-    <button class="tab active" data-topic="all" onclick="filterTopic(this, 'all')">
+    <button class="tab active" data-topic="all" onclick="filterTopic(this,'all')">
       All <span class="count" id="count-all"></span>
     </button>
     {% for topic in topics %}
-    <button class="tab" data-topic="{{ topic }}" onclick="filterTopic(this, '{{ topic }}')">
+    <button class="tab" data-topic="{{ topic }}" onclick="filterTopic(this,'{{ topic }}')">
       {{ topic }} <span class="count" id="count-{{ loop.index }}"></span>
     </button>
     {% endfor %}
@@ -414,33 +204,34 @@
 </header>
 
 <main>
-
   <div class="stats">
-    <span id="stat-articles">{{ total_articles }} articles</span>
+    <span>{{ total_articles }} articles</span>
     <span>{{ by_source | length }} sources</span>
-    {% if highlights %}<span>{{ highlights | length }} highlights</span>{% endif %}
+    {% if highlights %}<span>{{ highlights | length }} top picks</span>{% endif %}
     <span>{{ generated_at }}</span>
   </div>
 
   {% if errors %}
   <div class="errors-wrap">
     <details>
-      <summary>⚠ {{ errors | length }} source(s) had fetch issues</summary>
-      {% for error in errors %}
-      <p>{{ error }}</p>
-      {% endfor %}
+      <summary>&#9888; {{ errors | length }} source(s) had fetch issues</summary>
+      {% for error in errors %}<p>{{ error }}</p>{% endfor %}
     </details>
   </div>
   {% endif %}
 
-  <!-- Sources panel -->
+  <section id="pins-section">
+    <div class="section-label">Pinned</div>
+    <div id="pins-container"></div>
+  </section>
+
   <div class="sources-panel">
     <details>
       <summary>
         <span>News Sources</span>
         <span class="summary-right">
           <span>{{ sources | length }} configured</span>
-          <a class="edit-link" href="{{ github_config_url }}" target="_blank" rel="noopener">Edit in GitHub →</a>
+          <a class="edit-link" href="{{ github_config_url }}" target="_blank" rel="noopener">Edit in GitHub &rarr;</a>
         </span>
       </summary>
       <div class="sources-list">
@@ -468,12 +259,12 @@
       </div>
       <h3><a href="{{ article.url }}" target="_blank" rel="noopener">{{ article.title }}</a></h3>
       <p class="why-it-matters">{{ article.why_it_matters }}</p>
+      <button class="pin-btn" data-url="{{ article.url }}" data-title="{{ article.title }}" data-source="{{ article.source }}" data-date="{{ article.published_display }}" onclick="togglePin(this)" title="Pin">&#8853;</button>
     </div>
     {% endfor %}
   </section>
   {% endif %}
 
-  <!-- Source jump nav (hidden when filtering by topic) -->
   <div class="source-nav" id="source-nav">
     {% for source_name in by_source %}
     <a href="#src-{{ loop.index }}" id="nav-{{ loop.index }}">{{ source_name }}</a>
@@ -484,121 +275,181 @@
 
   {% for source_name, source_articles in by_source.items() %}
   <section class="source-section" id="src-{{ loop.index }}" data-source="{{ source_name }}">
-    <div class="source-heading">
-      {{ source_name }}<span class="source-count">{{ source_articles | length }}</span>
-    </div>
+    <div class="source-heading">{{ source_name }}<span class="source-count">{{ source_articles | length }}</span></div>
     {% for article in source_articles %}
-    <div class="article-card {% if article.url in highlight_urls %}is-highlight{% endif %}"
-         data-topic="{{ article.topic }}">
+    <div class="article-card {% if article.url in highlight_urls %}is-highlight{% endif %}" data-topic="{{ article.topic }}">
       <h3><a href="{{ article.url }}" target="_blank" rel="noopener">{{ article.title }}</a></h3>
-      {% if article.description %}
-      <p class="article-desc">{{ article.description }}</p>
-      {% endif %}
+      {% if article.description %}<p class="article-desc">{{ article.description }}</p>{% endif %}
       <div class="article-footer">
-        <span>{{ article.published_display or "—" }}</span>
+        <span>{{ article.published_display or "&#8212;" }}</span>
         <span class="topic-badge">{{ article.topic }}</span>
         {% set score = scores.get(article.url, 0) %}
-        {% if score >= 7 %}
-        <span class="score-badge score-high">{{ score }}/10</span>
-        {% elif score >= 4 %}
-        <span class="score-badge score-mid">{{ score }}/10</span>
-        {% elif score > 0 %}
-        <span class="score-badge score-low">{{ score }}/10</span>
-        {% endif %}
+        {% if score >= 7 %}<span class="score-badge score-high">{{ score }}/10</span>
+        {% elif score >= 4 %}<span class="score-badge score-mid">{{ score }}/10</span>
+        {% elif score > 0 %}<span class="score-badge score-low">{{ score }}/10</span>{% endif %}
       </div>
+      <button class="pin-btn" data-url="{{ article.url }}" data-title="{{ article.title }}" data-source="{{ article.source }}" data-date="{{ article.published_display }}" onclick="togglePin(this)" title="Pin">&#8853;</button>
     </div>
     {% endfor %}
   </section>
   {% endfor %}
 
   {% if not by_source %}
-  <div class="empty">No articles found. Check your sources in config.yaml.</div>
+  <div style="text-align:center;padding:60px 20px;color:var(--text-muted);font-size:14px">No articles found.</div>
   {% endif %}
-
 </main>
 
 <script>
+  const GITHUB_REPO   = "{{ github_repo }}";
+  const GITHUB_BRANCH = "{{ github_branch }}";
+  const STATE_API     = `https://api.github.com/repos/${GITHUB_REPO}/contents/docs/state.json`;
+
   // Theme
   function getTheme() { return localStorage.getItem("theme") || "dark"; }
-  function setTheme(t) {
-    document.documentElement.setAttribute("data-theme", t);
-    document.getElementById("theme-btn").textContent = t === "dark" ? "Light" : "Dark";
-    localStorage.setItem("theme", t);
-  }
+  function setTheme(t) { document.documentElement.setAttribute("data-theme", t); document.getElementById("theme-btn").textContent = t === "dark" ? "Light" : "Dark"; localStorage.setItem("theme", t); }
   function toggleTheme() { setTheme(getTheme() === "dark" ? "light" : "dark"); }
   setTheme(getTheme());
 
-  // Topic filtering
-  let currentTopic = "all";
+  // Toast
+  function toast(msg) {
+    const el = document.getElementById("toast");
+    el.textContent = msg; el.classList.add("show");
+    setTimeout(() => el.classList.remove("show"), 2500);
+  }
 
+  // Settings
+  function openSettings() {
+    document.getElementById("settings-modal").classList.add("open");
+    const t = localStorage.getItem("gh_token") || "";
+    document.getElementById("token-input").value = t;
+    setTokenStatus(t ? "Token saved." : "", t ? "ok" : "");
+  }
+  function closeSettings() { document.getElementById("settings-modal").classList.remove("open"); }
+  function setTokenStatus(msg, cls) { const el = document.getElementById("token-status"); el.textContent = msg; el.className = "token-status" + (cls ? " " + cls : ""); }
+  function saveToken() { const v = document.getElementById("token-input").value.trim(); if (!v) { setTokenStatus("Enter a token first.", "err"); return; } localStorage.setItem("gh_token", v); setTokenStatus("Token saved.", "ok"); toast("Token saved."); }
+  function clearToken() { localStorage.removeItem("gh_token"); document.getElementById("token-input").value = ""; setTokenStatus("Token cleared.", ""); }
+
+  // State / pins
+  let cachedState = null;
+  let cachedSha   = null;
+
+  async function fetchState() {
+    try {
+      const token = localStorage.getItem("gh_token");
+      const headers = token ? { Authorization: `token ${token}` } : {};
+      const resp = await fetch(STATE_API, { headers, cache: "no-store" });
+      if (!resp.ok) throw new Error(resp.status);
+      const data = await resp.json();
+      cachedSha = data.sha;
+      cachedState = JSON.parse(atob(data.content.replace(/\n/g, "")));
+    } catch (e) {
+      try {
+        const resp = await fetch(`https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/docs/state.json?_=${Date.now()}`);
+        cachedState = await resp.json();
+      } catch (e2) {
+        cachedState = { seen_highlights: [], pins: [] };
+      }
+    }
+    cachedState.pins = cachedState.pins || [];
+    return cachedState;
+  }
+
+  async function writeState(state) {
+    const token = localStorage.getItem("gh_token");
+    if (!token) { toast("Add a GitHub token in Settings to save pins across devices."); return false; }
+    if (!cachedSha) { toast("Could not get file sha — try refreshing."); return false; }
+    const resp = await fetch(STATE_API, {
+      method: "PUT",
+      headers: { Authorization: `token ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ message: "Update pins", content: btoa(unescape(encodeURIComponent(JSON.stringify(state, null, 2)))), sha: cachedSha, branch: GITHUB_BRANCH })
+    });
+    if (!resp.ok) { const err = await resp.json().catch(() => ({})); toast("Save failed: " + (err.message || resp.status)); return false; }
+    const data = await resp.json();
+    cachedSha = data.content.sha;
+    cachedState = state;
+    return true;
+  }
+
+  function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+  function renderPins(pins) {
+    const section = document.getElementById("pins-section");
+    const container = document.getElementById("pins-container");
+    if (!pins || pins.length === 0) { section.style.display = "none"; return; }
+    section.style.display = "";
+    container.innerHTML = pins.slice().reverse().map(p => `
+      <div class="pin-card">
+        <div class="pin-card-top">
+          <div class="pin-card-meta">
+            <span class="pin-source">${escHtml(p.source||"")}</span>
+            ${p.topic ? `<span class="topic-badge">${escHtml(p.topic)}</span>` : ""}
+          </div>
+          <span class="pin-date">${escHtml(p.date||"")}</span>
+        </div>
+        <h3><a href="${escHtml(p.url)}" target="_blank" rel="noopener">${escHtml(p.title)}</a></h3>
+        <button class="pin-btn pinned" data-url="${escHtml(p.url)}" data-title="${escHtml(p.title)}" data-source="${escHtml(p.source||"")}" data-date="${escHtml(p.date||"")}" onclick="togglePin(this)" title="Unpin">&#8855;</button>
+      </div>`).join("");
+  }
+
+  function syncPinButtons(pins) {
+    const pinned = new Set(pins.map(p => p.url));
+    document.querySelectorAll(".pin-btn[data-url]").forEach(btn => {
+      const on = pinned.has(btn.dataset.url);
+      btn.classList.toggle("pinned", on);
+      btn.title = on ? "Unpin" : "Pin";
+      btn.innerHTML = on ? "&#8855;" : "&#8853;";
+    });
+  }
+
+  async function togglePin(btn) {
+    if (!cachedState) return;
+    const { url, title, source, date } = btn.dataset;
+    const topic = btn.closest("[data-topic]")?.dataset.topic || "";
+    const pins = cachedState.pins;
+    const idx = pins.findIndex(p => p.url === url);
+    const wasPinned = idx !== -1;
+    if (wasPinned) { cachedState.pins.splice(idx, 1); }
+    else { cachedState.pins.push({ url, title, source, date, topic, pinned_at: new Date().toISOString() }); }
+    renderPins(cachedState.pins);
+    syncPinButtons(cachedState.pins);
+    const ok = await writeState(cachedState);
+    if (ok) { toast(wasPinned ? "Unpinned." : "Pinned."); }
+  }
+
+  // Topic filter
   function filterTopic(btn, topic) {
-    currentTopic = topic;
-
-    // Update tab styles
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
     btn.classList.add("active");
-
     const isAll = topic === "all";
-    const sourceNav = document.getElementById("source-nav");
-    const noResults = document.getElementById("no-results");
-
-    // Highlights: filter cards, hide section if none visible
-    const highlightCards = document.querySelectorAll(".highlight-card");
-    let visibleHighlights = 0;
-    highlightCards.forEach(c => {
-      const show = isAll || c.dataset.topic === topic;
-      c.style.display = show ? "" : "none";
-      if (show) visibleHighlights++;
+    let visH = 0;
+    document.querySelectorAll(".highlight-card").forEach(c => { const s = isAll || c.dataset.topic === topic; c.style.display = s ? "" : "none"; if (s) visH++; });
+    const hs = document.getElementById("highlights-section"); if (hs) hs.style.display = visH > 0 ? "" : "none";
+    let anyVis = false;
+    document.querySelectorAll(".source-section").forEach((sec, i) => {
+      let vis = 0;
+      sec.querySelectorAll(".article-card").forEach(c => { const s = isAll || c.dataset.topic === topic; c.style.display = s ? "" : "none"; if (s) vis++; });
+      sec.style.display = vis > 0 ? "" : "none";
+      if (vis > 0) anyVis = true;
+      const nav = document.getElementById("nav-" + (i+1)); if (nav) nav.style.display = vis > 0 ? "" : "none";
     });
-    const highlightSection = document.getElementById("highlights-section");
-    if (highlightSection) highlightSection.style.display = visibleHighlights > 0 ? "" : "none";
-
-    // Article cards + source sections
-    let anyVisible = false;
-    document.querySelectorAll(".source-section").forEach((section, i) => {
-      const cards = section.querySelectorAll(".article-card");
-      let sectionVisible = 0;
-      cards.forEach(c => {
-        const show = isAll || c.dataset.topic === topic;
-        c.style.display = show ? "" : "none";
-        if (show) sectionVisible++;
-      });
-      const show = sectionVisible > 0;
-      section.style.display = show ? "" : "none";
-      if (show) anyVisible = true;
-
-      // Source nav link
-      const navLink = document.getElementById("nav-" + (i + 1));
-      if (navLink) navLink.style.display = show ? "" : "none";
-    });
-
-    sourceNav.style.display = isAll ? "" : "none";
-    noResults.classList.toggle("visible", !isAll && !anyVisible);
-
+    document.getElementById("source-nav").style.display = isAll ? "" : "none";
+    document.getElementById("no-results").classList.toggle("visible", !isAll && !anyVis);
     updateCounts();
   }
 
   function updateCounts() {
-    // Count all articles
-    const allCards = document.querySelectorAll(".article-card");
-    document.getElementById("count-all").textContent = allCards.length;
-
-    // Count per topic
-    const topicCounts = {};
-    allCards.forEach(c => {
-      topicCounts[c.dataset.topic] = (topicCounts[c.dataset.topic] || 0) + 1;
-    });
-
+    const all = document.querySelectorAll(".article-card");
+    document.getElementById("count-all").textContent = all.length;
+    const counts = {};
+    all.forEach(c => { counts[c.dataset.topic] = (counts[c.dataset.topic]||0) + 1; });
     document.querySelectorAll(".tab[data-topic]").forEach(tab => {
-      const topic = tab.dataset.topic;
-      if (topic === "all") return;
-      const span = tab.querySelector(".count");
-      if (span) span.textContent = topicCounts[topic] || 0;
+      if (tab.dataset.topic === "all") return;
+      const sp = tab.querySelector(".count"); if (sp) sp.textContent = counts[tab.dataset.topic] || 0;
     });
   }
 
   updateCounts();
+  (async () => { const state = await fetchState(); renderPins(state.pins); syncPinButtons(state.pins); })();
 </script>
-
 </body>
 </html>

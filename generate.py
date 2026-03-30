@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import random
 import calendar
 import feedparser
 import yaml
@@ -13,14 +14,46 @@ from jinja2 import Environment, FileSystemLoader
 
 ET = ZoneInfo("America/New_York")
 FETCH_TIMEOUT = 15
-MAX_ARTICLES_FOR_AI = 100
-GITHUB_CONFIG_URL = "https://github.com/ananta1234/daily_briefings/blob/main/config.yaml"
+LOOKBACK_DAYS = 30
+MAX_ARTICLES_FOR_AI = 100   # total sent to Claude per run
+RECENT_ARTICLES = 50        # most recent N always included
+OLDER_SAMPLE = 50           # random sample from older articles
+MAX_SEEN_HIGHLIGHTS = 500   # cap seen history so state.json stays small
+GITHUB_REPO = "ananta1234/daily_briefings"
+GITHUB_BRANCH = "main"
+GITHUB_CONFIG_URL = f"https://github.com/{GITHUB_REPO}/blob/{GITHUB_BRANCH}/config.yaml"
 
 
 def load_config():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.join(script_dir, "config.yaml")) as f:
         return yaml.safe_load(f)
+
+
+def state_path():
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "docs", "state.json")
+
+
+def load_state():
+    path = state_path()
+    if os.path.exists(path):
+        try:
+            with open(path) as f:
+                data = json.load(f)
+                # ensure expected keys exist
+                data.setdefault("seen_highlights", [])
+                data.setdefault("pins", [])
+                return data
+        except Exception as e:
+            print(f"[WARN] Could not load state.json: {e}")
+    return {"seen_highlights": [], "pins": []}
+
+
+def save_state(state):
+    path = state_path()
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as f:
+        json.dump(state, f, indent=2)
 
 
 def clean_html(text):
@@ -61,7 +94,7 @@ def fetch_feed(source):
         resp.raise_for_status()
         feed = feedparser.parse(resp.content)
 
-        cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+        cutoff = datetime.now(timezone.utc) - timedelta(days=LOOKBACK_DAYS)
         articles = []
 
         for entry in feed.entries:
@@ -83,7 +116,7 @@ def fetch_feed(source):
                 "published": published.isoformat() if published else None,
                 "published_display": fmt_date(published),
                 "source": source["name"],
-                "topic": "General Tech",  # default, overwritten by AI
+                "topic": "General Tech",
             })
 
         return source["name"], articles, None
@@ -118,10 +151,25 @@ def deduplicate(articles):
     return result
 
 
-def get_ai_analysis(articles, interests, topics):
+def select_for_ai(articles):
+    """
+    Take 50 most recent + random sample of 50 older ones.
+    This ensures both recency and discovery of older gems.
+    """
+    sorted_articles = sorted(articles, key=lambda a: a["published"] or "", reverse=True)
+    recent = sorted_articles[:RECENT_ARTICLES]
+    older = sorted_articles[RECENT_ARTICLES:]
+    sampled_older = random.sample(older, min(OLDER_SAMPLE, len(older))) if older else []
+    combined = recent + sampled_older
+    # Sort by date so Claude sees temporal context
+    combined.sort(key=lambda a: a["published"] or "", reverse=True)
+    return combined[:MAX_ARTICLES_FOR_AI]
+
+
+def get_ai_analysis(articles, interests, topics, seen_highlights):
     """
     Returns (highlights, scores, topic_map).
-    On failure returns ([], {}, {}) and site still renders without AI features.
+    On failure returns ([], {}, {}) — site renders without AI features.
     """
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key or not articles:
@@ -129,21 +177,27 @@ def get_ai_analysis(articles, interests, topics):
         return [], {}, {}
 
     client = anthropic.Anthropic(api_key=api_key)
-    articles_for_ai = articles[:MAX_ARTICLES_FOR_AI]
+    articles_for_ai = select_for_ai(articles)
 
     interests_str = "\n".join(f"- {i}" for i in interests)
     topics_str = ", ".join(f'"{t}"' for t in topics)
     articles_list = "\n\n".join(
-        f"[{i}] {a['title']} ({a['source']})\n{a['description'][:200]}"
+        f"[{i}] {a['title']} ({a['source']}, {a['published_display'] or 'undated'})\n{a['description'][:200]}"
         for i, a in enumerate(articles_for_ai)
     )
+
+    seen_str = ""
+    if seen_highlights:
+        seen_str = f"\nAlready surfaced to the reader (avoid repeating in highlights unless truly exceptional):\n" + \
+                   "\n".join(f"- {url}" for url in seen_highlights[-100:])
 
     prompt = f"""You are a personal news curator for a specific reader. Their interests:
 {interests_str}
 
 Available topic categories: {topics_str}
+{seen_str}
 
-Today's articles (indexed 0 to {len(articles_for_ai) - 1}):
+Articles available (indexed 0 to {len(articles_for_ai) - 1}):
 {articles_list}
 
 Return a JSON object (no other text) with exactly these keys:
@@ -151,7 +205,7 @@ Return a JSON object (no other text) with exactly these keys:
   "highlights": [
     {{
       "index": <int>,
-      "why_it_matters": "<1-2 sentences explaining why this is significant and relevant to the reader's specific interests>"
+      "why_it_matters": "<1-2 sentences: why this is significant and relevant to the reader's specific interests>"
     }}
   ],
   "scores": {{
@@ -163,9 +217,9 @@ Return a JSON object (no other text) with exactly these keys:
 }}
 
 Rules:
-- highlights: pick the 5 most significant AND relevant articles. Prioritize real significance (major regulatory moves, big funding, policy shifts) over minor news.
-- scores: score all {len(articles_for_ai)} articles
-- topics: assign every article to exactly one topic category from the list above"""
+- highlights: pick the 5 most significant AND relevant articles the reader hasn't seen yet. Articles can be from any date — prioritize quality and relevance. Avoid repeating previously surfaced URLs unless the article is truly exceptional.
+- scores: score all {len(articles_for_ai)} articles for relevance (1-10)
+- topics: assign every article to exactly one topic category"""
 
     try:
         message = client.messages.create(
@@ -218,21 +272,31 @@ def main():
     topics = config.get("topics", ["General Tech"])
     sources = config["sources"]
 
-    print(f"[INFO] Fetching {len(sources)} feeds...")
+    state = load_state()
+    seen_highlights = state.get("seen_highlights", [])
+    print(f"[INFO] {len(seen_highlights)} previously seen highlights loaded")
+
+    print(f"[INFO] Fetching {len(sources)} feeds (last {LOOKBACK_DAYS} days)...")
     articles, errors = fetch_all_feeds(sources)
     articles = deduplicate(articles)
     articles.sort(key=lambda a: a["published"] or "", reverse=True)
     print(f"[INFO] {len(articles)} unique articles after dedup")
 
     print("[INFO] Running AI analysis...")
-    highlights, scores, topic_map = get_ai_analysis(articles, interests, topics)
+    highlights, scores, topic_map = get_ai_analysis(articles, interests, topics, seen_highlights)
     print(f"[INFO] {len(highlights)} highlights, {len(scores)} scored, {len(topic_map)} tagged")
 
-    # Apply topic tags from AI
+    # Update seen highlights — add new ones, cap list size
+    new_seen = seen_highlights + [a["url"] for a in highlights]
+    state["seen_highlights"] = new_seen[-MAX_SEEN_HIGHLIGHTS:]
+    save_state(state)
+    print(f"[INFO] state.json updated ({len(state['seen_highlights'])} seen highlights)")
+
+    # Apply topic tags
     for a in articles:
         a["topic"] = topic_map.get(a["url"], "General Tech")
 
-    # Group by source, sort each group by relevance then recency
+    # Group by source, sort by relevance then recency
     by_source = {}
     for a in articles:
         by_source.setdefault(a["source"], []).append(a)
@@ -264,15 +328,16 @@ def main():
         generated_at=generated_at,
         total_articles=len(articles),
         github_config_url=GITHUB_CONFIG_URL,
+        github_repo=GITHUB_REPO,
+        github_branch=GITHUB_BRANCH,
     )
 
     out_dir = os.path.join(script_dir, "docs")
     os.makedirs(out_dir, exist_ok=True)
-    out_path = os.path.join(out_dir, "index.html")
-    with open(out_path, "w", encoding="utf-8") as f:
+    with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(html)
 
-    print(f"[INFO] Done — {out_path}")
+    print(f"[INFO] Done.")
 
 
 if __name__ == "__main__":

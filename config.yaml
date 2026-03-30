@@ -62,6 +62,16 @@ sources:
   - name: Inside Higher Ed
     url: https://www.insidehighered.com/rss.xml
 
+  # High-frequency news
+  - name: STAT News
+    url: https://www.statnews.com/feed/
+  - name: Politico Pro (AI)
+    url: https://www.politico.com/rss/technology.xml
+  - name: Axios
+    url: https://api.axios.com/feed/
+  - name: Bloomberg Technology
+    url: https://feeds.bloomberg.com/technology/news.rss
+
   # Substacks
   - name: Fix the News
     url: https://fixthenews.com/feed
