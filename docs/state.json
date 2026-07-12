@@ -1,10 +1,5 @@
 {
   "seen_highlights": [
-    "https://www.bloomberg.com/news/articles/2026-04-01/boe-warns-on-escalating-risks-from-ai-fallout-from-iran-war",
-    "https://www.bloomberg.com/news/articles/2026-04-01/ai-puts-uk-s-high-paid-jobs-and-tax-revenues-at-risk-study-says",
-    "https://www.bloomberg.com/news/videos/2026-04-01/openai-seals-122-billion-mega-funding-deal-video",
-    "https://news.crunchbase.com/venture/record-breaking-funding-ai-global-q1-2026/",
-    "https://www.insidehighered.com/news/diversity/2026/04/01/higher-ed-denounces-gsas-proposed-federal-funding-strings",
     "https://www.statnews.com/2026/04/02/how-fda-stance-breakthrough-ai-medical-device-evolving/?utm_campaign=rss",
     "https://news.crunchbase.com/venture/foundational-ai-startup-funding-doubled-openai-anthropic-xai-q1-2026/",
     "https://www.bloomberg.com/news/videos/2026-04-02/us-tech-job-cut-announcements-rise-as-ai-adoption-grows-video",
@@ -499,7 +494,12 @@
     "https://www.bloomberg.com/news/videos/2026-07-10/apple-sues-openai-for-trade-secret-theft-video",
     "https://news.crunchbase.com/ai/biggest-funding-rounds-billion-dollar-cyber-ai-keyfactor-sambanova/",
     "https://techcrunch.com/2026/07/09/fidji-simo-steps-down-from-openais-no-2-role/",
-    "https://www.axios.com/2026/07/07/ai-hacking-benchmarking-tests"
+    "https://www.axios.com/2026/07/07/ai-hacking-benchmarking-tests",
+    "https://www.axios.com/2026/07/10/alternative-playbook-ai-regulation",
+    "https://www.bloomberg.com/news/articles/2026-07-11/openai-safety-head-heidecke-to-leave-firm-after-reshuffle-wired",
+    "https://www.axios.com/2026/07/07/ai-hacking-benchmarking-tests",
+    "https://www.axios.com/2026/07/06/anthropic-claude-ai-conscious",
+    "https://www.npr.org/2026/06/30/nx-s1-5835631/turner-camhi-do-no-harm-college-loans"
   ],
   "pins": []
 }
