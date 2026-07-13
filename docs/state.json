@@ -1,10 +1,5 @@
 {
   "seen_highlights": [
-    "https://www.statnews.com/2026/04/02/how-fda-stance-breakthrough-ai-medical-device-evolving/?utm_campaign=rss",
-    "https://news.crunchbase.com/venture/foundational-ai-startup-funding-doubled-openai-anthropic-xai-q1-2026/",
-    "https://www.bloomberg.com/news/videos/2026-04-02/us-tech-job-cut-announcements-rise-as-ai-adoption-grows-video",
-    "https://www.bloomberg.com/news/newsletters/2026-04-02/openclaw-is-helping-chinese-ai-firms-find-users-overseas",
-    "https://www.axios.com/2026/04/02/jamie-dimon-ai-geopolitical-risk-axios-show",
     "https://www.axios.com/2026/04/03/california-national-testing-ground-ai-rules",
     "https://www.theverge.com/ai-artificial-intelligence/906525/ai-chatbot-prescribe-refill-psychiatric-drugs",
     "https://www.insidehighered.com/news/student-success/academic-life/2026/04/03/how-5-colleges-are-approaching-ai",
@@ -499,7 +494,12 @@
     "https://www.bloomberg.com/news/articles/2026-07-11/openai-safety-head-heidecke-to-leave-firm-after-reshuffle-wired",
     "https://www.axios.com/2026/07/07/ai-hacking-benchmarking-tests",
     "https://www.axios.com/2026/07/06/anthropic-claude-ai-conscious",
-    "https://www.npr.org/2026/06/30/nx-s1-5835631/turner-camhi-do-no-harm-college-loans"
+    "https://www.npr.org/2026/06/30/nx-s1-5835631/turner-camhi-do-no-harm-college-loans",
+    "https://www.bloomberg.com/news/articles/2026-07-13/anthropic-openai-warnings-prompt-distillation-debate-in-dc",
+    "https://www.technologyreview.com/2026/07/09/1140293/anthropic-found-a-hidden-space-where-claude-puzzles-over-concepts/",
+    "https://ploy.ai/blog/migrating-a-production-ai-agent-to-gpt-5-6",
+    "https://www.bloomberg.com/news/videos/2026-07-13/why-ai-might-actually-create-more-work-for-lawyers-video",
+    "https://news.crunchbase.com/venture/edtech-university-ai-platform-funding-edvisorly/"
   ],
   "pins": []
 }
