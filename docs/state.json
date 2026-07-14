@@ -1,10 +1,5 @@
 {
   "seen_highlights": [
-    "https://www.axios.com/2026/04/03/california-national-testing-ground-ai-rules",
-    "https://www.theverge.com/ai-artificial-intelligence/906525/ai-chatbot-prescribe-refill-psychiatric-drugs",
-    "https://www.insidehighered.com/news/student-success/academic-life/2026/04/03/how-5-colleges-are-approaching-ai",
-    "https://www.axios.com/2026/04/02/jamie-dimon-ai-geopolitical-risk-axios-show",
-    "https://www.bloomberg.com/news/articles/2026-04-03/microsoft-drafts-10-billion-investment-plan-in-ai-hungry-japan",
     "https://techcrunch.com/2026/04/03/anthropic-buys-biotech-startup-coefficient-bio-in-400m-deal-reports/",
     "https://www.statnews.com/2026/04/02/fda-ai-breakthrough-medical-device-stat-health-tech/?utm_campaign=rss",
     "https://www.axios.com/2026/04/03/california-national-testing-ground-ai-rules",
@@ -499,7 +494,12 @@
     "https://www.technologyreview.com/2026/07/09/1140293/anthropic-found-a-hidden-space-where-claude-puzzles-over-concepts/",
     "https://ploy.ai/blog/migrating-a-production-ai-agent-to-gpt-5-6",
     "https://www.bloomberg.com/news/videos/2026-07-13/why-ai-might-actually-create-more-work-for-lawyers-video",
-    "https://news.crunchbase.com/venture/edtech-university-ai-platform-funding-edvisorly/"
+    "https://news.crunchbase.com/venture/edtech-university-ai-platform-funding-edvisorly/",
+    "https://www.axios.com/2026/07/14/demis-hassabis-ai-regulation-google-deepmind",
+    "https://www.statnews.com/2026/07/14/openadmet-ai-drug-metabolism-prediction-inductive-bio/?utm_campaign=rss",
+    "https://www.bloomberg.com/news/articles/2026-07-14/ai-investment-race-could-turn-debt-fueled-boom-to-bust-bis-says",
+    "https://www.technologyreview.com/2026/07/14/1140391/the-download-anthropic-claude-internal-thoughts-world-models/",
+    "https://www.bloomberg.com/news/articles/2026-07-14/finland-s-nestai-builds-sovereign-ai-tools-for-europe-militaries"
   ],
   "pins": []
 }
