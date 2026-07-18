@@ -1,10 +1,5 @@
 {
   "seen_highlights": [
-    "https://www.bloomberg.com/news/articles/2026-04-07/google-adds-mental-health-tools-to-gemini-chatbot-after-lawsuit",
-    "https://techcrunch.com/2026/04/06/openais-vision-for-the-ai-economy-public-wealth-funds-robot-taxes-and-a-four-day-work-week/",
-    "https://www.statnews.com/2026/04/07/fda-trump-budget-generics-clinical-trials-us-manufacturing/?utm_campaign=rss",
-    "https://www.bloomberg.com/news/articles/2026-04-07/what-is-arr-behind-the-least-trusted-metric-of-the-ai-era",
-    "https://www.technologyreview.com/2026/04/07/1135208/the-download-ai-impact-jobs-data-centres-space/",
     "https://www.axios.com/2026/04/08/anthropic-mythos-model-ai-cyberattack-warning",
     "https://www.statnews.com/2026/04/08/insurers-providers-agree-ai-scribes-raise-health-care-costs/?utm_campaign=rss",
     "https://www.insidehighered.com/news/tech-innovation/artificial-intelligence/2026/04/08/which-jobs-are-most-risk-age-ai",
@@ -499,7 +494,12 @@
     "https://venturebeat.com/ai/the-agent-security-gap-54-of-enterprises-have-already-had-an-ai-agent-incident-and-most-still-let-agents-share-credentials",
     "https://www.bloomberg.com/news/articles/2026-07-17/china-s-powerful-new-moonshot-ai-model-closes-gap-with-us-rivals",
     "https://www.axios.com/2026/07/15/anthropic-hiring-catastrophe-amodei",
-    "https://www.theverge.com/science/966711/omb-grant-science-space-nasa-planetary-society"
+    "https://www.theverge.com/science/966711/omb-grant-science-space-nasa-planetary-society",
+    "https://www.axios.com/2026/07/18/china-ai-open-source-kimi-anthropic-openai",
+    "https://www.bloomberg.com/news/articles/2026-07-18/moonshot-s-kimi-upends-conventional-wisdom-on-us-lead-over-china",
+    "https://www.axios.com/2026/07/18/ai-lawyers-judges-balancing-act",
+    "https://techcrunch.com/2026/07/17/databricks-hits-188b-valuation-extending-its-run-as-ais-favorite-second-act/",
+    "https://venturebeat.com/ai/agentic-orchestration-enterprise-ai-organizations-have-a-deployment-problem-not-a-platform-problem-and-most-are-calling-chatbots-agents"
   ],
   "pins": []
 }
