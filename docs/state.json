@@ -1,10 +1,5 @@
 {
   "seen_highlights": [
-    "https://www.axios.com/2026/04/08/anthropic-mythos-model-ai-cyberattack-warning",
-    "https://www.statnews.com/2026/04/08/insurers-providers-agree-ai-scribes-raise-health-care-costs/?utm_campaign=rss",
-    "https://www.insidehighered.com/news/tech-innovation/artificial-intelligence/2026/04/08/which-jobs-are-most-risk-age-ai",
-    "https://techcrunch.com/2026/04/07/anthropic-mythos-ai-model-preview-security/",
-    "https://www.foreignaffairs.com/iran/how-iran-war-will-upend-global-economy",
     "https://www.axios.com/2026/04/09/openai-new-model-cyber-mythos-anthopic",
     "https://www.bloomberg.com/news/articles/2026-04-09/coreweave-expands-meta-deal-for-ai-computing-to-21-billion",
     "https://www.bloomberg.com/news/articles/2026-04-09/openai-pauses-stargate-uk-data-center-effort-citing-energy-costs",
@@ -499,7 +494,12 @@
     "https://www.bloomberg.com/news/articles/2026-07-18/moonshot-s-kimi-upends-conventional-wisdom-on-us-lead-over-china",
     "https://www.axios.com/2026/07/18/ai-lawyers-judges-balancing-act",
     "https://techcrunch.com/2026/07/17/databricks-hits-188b-valuation-extending-its-run-as-ais-favorite-second-act/",
-    "https://venturebeat.com/ai/agentic-orchestration-enterprise-ai-organizations-have-a-deployment-problem-not-a-platform-problem-and-most-are-calling-chatbots-agents"
+    "https://venturebeat.com/ai/agentic-orchestration-enterprise-ai-organizations-have-a-deployment-problem-not-a-platform-problem-and-most-are-calling-chatbots-agents",
+    "https://www.bloomberg.com/news/articles/2026-07-19/alibaba-s-qwen-unveils-preview-of-flagship-ai-model",
+    "https://www.bloomberg.com/news/articles/2026-07-19/china-s-moonshot-plans-ipo-in-six-months-after-ai-breakthrough",
+    "https://www.axios.com/2026/07/18/china-ai-open-source-kimi-anthropic-openai",
+    "https://venturebeat.com/ai/the-agent-security-gap-54-of-enterprises-have-already-had-an-ai-agent-incident-and-most-still-let-agents-share-credentials",
+    "https://www.axios.com/2026/07/14/demis-hassabis-ai-regulation-google-deepmind"
   ],
   "pins": []
 }
