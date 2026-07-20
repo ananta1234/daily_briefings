@@ -1,10 +1,5 @@
 {
   "seen_highlights": [
-    "https://www.axios.com/2026/04/09/openai-new-model-cyber-mythos-anthopic",
-    "https://www.bloomberg.com/news/articles/2026-04-09/coreweave-expands-meta-deal-for-ai-computing-to-21-billion",
-    "https://www.bloomberg.com/news/articles/2026-04-09/openai-pauses-stargate-uk-data-center-effort-citing-energy-costs",
-    "https://www.insidehighered.com/opinion/views/2026/04/09/when-war-changes-global-higher-ed-opinion",
-    "https://www.statnews.com/2026/04/09/medicare-advantage-rates-latest-trump-policy-helps-health-insurers/?utm_campaign=rss",
     "https://www.bloomberg.com/news/articles/2026-04-10/anthropic-agrees-to-rent-coreweave-ai-capacity-to-power-claude",
     "https://www.statnews.com/2026/04/09/fda-rejects-proposal-to-deregulate-ai-devices-health-tech/?utm_campaign=rss",
     "https://www.bloomberg.com/news/articles/2026-04-10/elon-musk-s-xai-sues-colorado-over-ai-anti-discrimination-law",
@@ -499,7 +494,12 @@
     "https://www.bloomberg.com/news/articles/2026-07-19/china-s-moonshot-plans-ipo-in-six-months-after-ai-breakthrough",
     "https://www.axios.com/2026/07/18/china-ai-open-source-kimi-anthropic-openai",
     "https://venturebeat.com/ai/the-agent-security-gap-54-of-enterprises-have-already-had-an-ai-agent-incident-and-most-still-let-agents-share-credentials",
-    "https://www.axios.com/2026/07/14/demis-hassabis-ai-regulation-google-deepmind"
+    "https://www.axios.com/2026/07/14/demis-hassabis-ai-regulation-google-deepmind",
+    "https://www.axios.com/2026/07/20/artificial-intelligence-drug-development-impact",
+    "https://www.axios.com/2026/07/20/ai-us-china-open-source-kimi",
+    "https://www.bloomberg.com/news/articles/2026-07-20/chinese-ai-sensation-moonshot-s-gamble-on-big-models-pays-off",
+    "https://www.statnews.com/2026/07/20/bms-nvidia-assembling-largest-pharma-ai-supercomputer/?utm_campaign=rss",
+    "https://www.technologyreview.com/2026/07/20/1140664/the-download-ai-hiring-biases-weather-data-sabotage/"
   ],
   "pins": []
 }
